@@ -63,32 +63,41 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abilities.cs" />
-    <Compile Include="Controller.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="GraphicalDebug.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="PointExtensions.cs" />
+    <Compile Include="Controllers\ConstructionController.cs" />
+    <Compile Include="Controllers\ProductionController.cs" />
+    <Compile Include="Controllers\UnitController.cs" />
+    <Compile Include="Data\Abilities.cs" />
+    <Compile Include="Bot\Controller.cs" />
+    <Compile Include="Data\Extensions.cs" />
+    <Compile Include="Debugging\GraphicalDebug.cs" />
+    <Compile Include="Debugging\Logger.cs" />
+    <Compile Include="Data\PointExtensions.cs" />
+    <Compile Include="Managers\ArmyManager.cs" />
+    <Compile Include="Managers\ConstructionManager.cs" />
+    <Compile Include="Controllers\GroupController.cs" />
+    <Compile Include="Managers\ProductionManager.cs" />
+    <Compile Include="Managers\StrategyManager.cs" />
+    <Compile Include="Managers\WorkerManager.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Protocol\Common.cs" />
-    <Compile Include="Protocol\Data.cs" />
-    <Compile Include="Protocol\Debug.cs" />
-    <Compile Include="Protocol\Error.cs" />
-    <Compile Include="Protocol\Query.cs" />
-    <Compile Include="Protocol\Raw.cs" />
-    <Compile Include="Protocol\Sc2Api.cs" />
-    <Compile Include="Protocol\Score.cs" />
-    <Compile Include="Protocol\Spatial.cs" />
-    <Compile Include="Protocol\Ui.cs" />
-    <Compile Include="TownHallSupervisor.cs" />
-    <Compile Include="Unit.cs" />
-    <Compile Include="UnitsTracker.cs" />
-    <Compile Include="Vector3Extensions.cs" />
-    <Compile Include="Wrapper\Interface.cs" />
-    <Compile Include="Wrapper\CommandLine.cs" />
-    <Compile Include="Wrapper\GameConnection.cs" />
-    <Compile Include="Wrapper\ProtobufProxy.cs" />
-    <Compile Include="Units.cs" />
+    <Compile Include="Base\Protocol\Common.cs" />
+    <Compile Include="Base\Protocol\Data.cs" />
+    <Compile Include="Base\Protocol\Debug.cs" />
+    <Compile Include="Base\Protocol\Error.cs" />
+    <Compile Include="Base\Protocol\Query.cs" />
+    <Compile Include="Base\Protocol\Raw.cs" />
+    <Compile Include="Base\Protocol\Sc2Api.cs" />
+    <Compile Include="Base\Protocol\Score.cs" />
+    <Compile Include="Base\Protocol\Spatial.cs" />
+    <Compile Include="Base\Protocol\Ui.cs" />
+    <Compile Include="Controllers\TownHallSupervisor.cs" />
+    <Compile Include="Bot\Unit.cs" />
+    <Compile Include="Bot\UnitsTracker.cs" />
+    <Compile Include="Data\Vector3Extensions.cs" />
+    <Compile Include="Base\Wrapper\Interface.cs" />
+    <Compile Include="Base\Wrapper\CommandLine.cs" />
+    <Compile Include="Base\Wrapper\GameConnection.cs" />
+    <Compile Include="Base\Wrapper\ProtobufProxy.cs" />
+    <Compile Include="Data\Units.cs" />
     <Compile Include="Pattern.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +114,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Pattern\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
