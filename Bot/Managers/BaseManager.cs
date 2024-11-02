@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Bot.Managers
 {
-    internal class ArmyManager : BaseManager 
+    internal class BaseManager
     {
+        public BaseManager() { }
 
     }
 }

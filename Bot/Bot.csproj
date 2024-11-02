@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ConstructionController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Debugging\Logger.cs" />
     <Compile Include="Data\PointExtensions.cs" />
     <Compile Include="Managers\ArmyManager.cs" />
+    <Compile Include="Managers\BaseManager.cs" />
     <Compile Include="Managers\ConstructionManager.cs" />
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Managers\ProductionManager.cs" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bot.Controllers
 {
-    internal class UnitController
+    internal class UnitController : BaseController
     {
     }
 }

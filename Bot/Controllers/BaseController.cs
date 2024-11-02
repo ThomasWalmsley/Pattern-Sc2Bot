@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bot.Managers
+namespace Bot.Controllers
 {
-    internal class ArmyManager : BaseManager 
+    internal class BaseController
     {
-
     }
 }

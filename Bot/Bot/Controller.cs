@@ -48,9 +48,10 @@ namespace Bot {
 
 
         public static List<Action> CloseFrame() {
+            gdebug.CloseFrame();
             return actions;
         }
-
+            
 
         public static void OpenFrame() {
             if (gameInfo == null || gameData == null || obs == null) {

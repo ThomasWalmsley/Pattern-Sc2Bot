@@ -5,8 +5,6 @@ using SC2APIProtocol;
 using System;
 using System.Linq;
 
-// ReSharper disable MemberCanBePrivate.Global
-
 namespace Bot {
     public class Unit {
         private SC2APIProtocol.Unit original;
@@ -38,9 +36,6 @@ namespace Bot {
         //toms changes
         public Unit AssignedMineralPatch;
         public List<Unit> Workers_assigned = new List<Unit>();
-        //public int CargoSpaceTaken;
-        //public int CargoSpaceMax;
-        //public bool hasMinerals;
 
         //SAJUUKS VARIABLES
         //there's more in the list above but idk

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bot.Managers
 {
-    internal class StrategyManager
+    internal class StrategyManager : BaseManager
     {
     }
 }

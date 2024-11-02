@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bot.Managers
 {
-    internal class ConstructionManager
+    internal class ConstructionManager : BaseManager
     {
     }
 }
