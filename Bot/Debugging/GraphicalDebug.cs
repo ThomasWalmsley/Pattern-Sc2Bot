@@ -127,6 +127,20 @@ namespace Bot
             Cubes.Add(new DebugBox() { Color = color, Max = max, Min = min });
         }
 
+        public void DrawCube(Vector3 position, float size)
+        {
+            if (!Debug) { return; }
+            float offset = size / 2;
+            //max
+            Point max = new Point { X = position.X + offset, Y = position.Y + offset, Z = position.Z + 0 };
+            //min
+            Point min = new Point { X = position.X - offset, Y = position.Y - offset, Z = position.Z };
+            //colour
+            var color = new Color { R = 255, B = 0, G = 0 };
+            //DrawRequest.Debug.Debug[0].Draw.Boxes.Add(new DebugBox() {Color = color, Max = max, Min = min });
+            Cubes.Add(new DebugBox() { Color = color, Max = max, Min = min });
+        }
+
         public void DrawLine(Unit unit, Unit unit2) 
         {
             if (!Debug) { return; }
@@ -154,8 +168,15 @@ namespace Bot
 
         public int MapHeight(int x, int y)
         {
-            return 0;
+            //return 0;
             //return SC2Util.GetDataValue(RaxBot.Main.GameInfo.StartRaw.TerrainHeight, x, y);
+            var terrainHeightData = Controller.gameInfo.StartRaw.TerrainHeight.Data;
+
+            // Calculate the index in the byte array
+            int index = y * Controller.gameInfo.StartRaw.TerrainHeight.Size.X + x;
+
+            // Return the height value at the specified coordinates
+            return terrainHeightData[index];
         }
 
         public void TestingStuff() 
@@ -211,11 +232,25 @@ namespace Bot
                 }
            
                 DrawLine(start, end);
+                drawBuildingGrid();
             }
             
         }
 
-
+        public void drawBuildingGrid() 
+        {
+            //draw a grid of where buildings can be placed
+            //draw a grid of where buildings can be placed
+            var cc = Controller.GetUnits(Units.ResourceCenters, onlyCompleted: false).First();
+            for (int x = 200; x > 100; x -= 1)
+            {
+                for (int y = 200; y > 100; y -= 1)
+                {
+                    //MapHeight(x, y);
+                    DrawCube(new Vector3(x, y, cc.Position.Z+0.05f), 1);
+                }
+            }
+        }
 
 
         public void DrawScreen(string text, uint size, float x, float y)

@@ -63,17 +63,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BotThings\PathFind.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ConstructionController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
-    <Compile Include="Data\Abilities.cs" />
+    <Compile Include="MapAnalysis\MapCell.cs" />
+    <Compile Include="MapAnalysis\MapData.cs" />
+    <Compile Include="TypeData\Abilities.cs" />
     <Compile Include="BotThings\Controller.cs" />
-    <Compile Include="Data\Extensions.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Debugging\GraphicalDebug.cs" />
     <Compile Include="Debugging\Logger.cs" />
-    <Compile Include="Data\PointExtensions.cs" />
+    <Compile Include="Extensions\PointExtensions.cs" />
     <Compile Include="Managers\ArmyManager.cs" />
     <Compile Include="Managers\BaseManager.cs" />
     <Compile Include="Managers\ConstructionManager.cs" />
@@ -95,12 +96,12 @@
     <Compile Include="Controllers\TownHallSupervisor.cs" />
     <Compile Include="BotThings\Unit.cs" />
     <Compile Include="BotThings\UnitsTracker.cs" />
-    <Compile Include="Data\Vector3Extensions.cs" />
+    <Compile Include="Extensions\Vector3Extensions.cs" />
     <Compile Include="Base\Wrapper\Interface.cs" />
     <Compile Include="Base\Wrapper\CommandLine.cs" />
     <Compile Include="Base\Wrapper\GameConnection.cs" />
     <Compile Include="Base\Wrapper\ProtobufProxy.cs" />
-    <Compile Include="Data\Units.cs" />
+    <Compile Include="TypeData\Units.cs" />
     <Compile Include="Pattern.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +120,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Data\" />
     <Folder Include="Pattern\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

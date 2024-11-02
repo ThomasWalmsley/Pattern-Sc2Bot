@@ -89,8 +89,6 @@ namespace Bot {
                         if (distance > 30)
                             enemyLocations.Add(enemyLocation);
                     }
-                    PathToEnemyBase = PathFind.FindPath(rcPosition, enemyLocations[0], gameInfo.StartRaw);
-                    Logger.Info($"Path to enemy base: {PathToEnemyBase.ToString()}");
                 }
             }
 
