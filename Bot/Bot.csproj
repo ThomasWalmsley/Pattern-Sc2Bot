@@ -63,12 +63,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BotThings\PathFind.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ConstructionController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Data\Abilities.cs" />
-    <Compile Include="Bot\Controller.cs" />
+    <Compile Include="BotThings\Controller.cs" />
     <Compile Include="Data\Extensions.cs" />
     <Compile Include="Debugging\GraphicalDebug.cs" />
     <Compile Include="Debugging\Logger.cs" />
@@ -92,8 +93,8 @@
     <Compile Include="Base\Protocol\Spatial.cs" />
     <Compile Include="Base\Protocol\Ui.cs" />
     <Compile Include="Controllers\TownHallSupervisor.cs" />
-    <Compile Include="Bot\Unit.cs" />
-    <Compile Include="Bot\UnitsTracker.cs" />
+    <Compile Include="BotThings\Unit.cs" />
+    <Compile Include="BotThings\UnitsTracker.cs" />
     <Compile Include="Data\Vector3Extensions.cs" />
     <Compile Include="Base\Wrapper\Interface.cs" />
     <Compile Include="Base\Wrapper\CommandLine.cs" />

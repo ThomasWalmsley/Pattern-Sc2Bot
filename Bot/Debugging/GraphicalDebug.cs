@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using SC2APIProtocol;
@@ -138,6 +139,18 @@ namespace Bot
             Lines.Add(new DebugLine() { Color = color, Line = line });
         }
 
+        public void DrawLine(Vector3 start, Vector3 end)
+        {
+            if (!Debug) { return; }
+
+            Point p0 = new Point { X = start.X, Y = start.Y, Z = start.Z + 0.05f };
+            Point p1 = new Point { X = end.X, Y = end.Y, Z = end.Z + 0.05f };
+            var color = new Color { R = 0, B = 0, G = 255 };
+
+            Line line = new Line() { P0 = p0, P1 = p1 };
+            Lines.Add(new DebugLine() { Color = color, Line = line });
+        }
+
 
         public int MapHeight(int x, int y)
         {
@@ -185,6 +198,21 @@ namespace Bot
             }
 
 
+            // Draw Lines Between Expansions
+            // Assuming you have methods to get the self and enemy start locations
+            var resourceCenters = Controller.GetUnits(Units.ResourceCenters);
+            if (resourceCenters.Count > 0) {
+                var rcPosition = resourceCenters[0].Position;
+                var enemyStartLocation = Controller.enemyLocations[0];
+                Vector3 start = new Vector3(rcPosition.X,rcPosition.Y,rcPosition.Z + 0.05f);
+                Vector3 end = new Vector3(enemyStartLocation.X, enemyStartLocation.Y, rcPosition.Z + 0.05f);//use same height as your townhall
+                if (Controller.frame %22 == 0){
+                    //Logger.Info($"Drawing line between expansions:{start.ToString()} , {end.ToString()}");
+                }
+           
+                DrawLine(start, end);
+            }
+            
         }
 
 

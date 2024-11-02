@@ -14,6 +14,7 @@ namespace Bot {
 
         //tomw
         public static GraphicalDebug gdebug = new GraphicalDebug();
+        public static List<Vector3> PathToEnemyBase = new List<Vector3>();
 
         //editable
         private static readonly int frameDelay = 0; //too fast? increase this to e.g. 20
@@ -88,6 +89,8 @@ namespace Bot {
                         if (distance > 30)
                             enemyLocations.Add(enemyLocation);
                     }
+                    PathToEnemyBase = PathFind.FindPath(rcPosition, enemyLocations[0], gameInfo.StartRaw);
+                    Logger.Info($"Path to enemy base: {PathToEnemyBase.ToString()}");
                 }
             }
 
