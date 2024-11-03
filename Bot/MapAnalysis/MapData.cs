@@ -1,20 +1,108 @@
-﻿using System;
+﻿using SC2APIProtocol;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 // Roy_T.AStar.Graphs;
 //using Roy_T.AStar.Primitives;
+using Roy_T.AStar.Grids;
+using Roy_T.AStar.Primitives;
+using Roy_T.AStar.Paths;
+using System.Numerics;
 
 namespace Bot.MapAnalysis
 {
-    internal class MapData
+    public class MapData
     {
         public int MapWidth { get; set; }
         public int MapHeight { get; set; }
         public Dictionary<int, Dictionary<int, MapCell>> Map { get; set; }
         public string MapName { get; set; }
+        public int MapLastUpdate { get; set; }
         //public List<WallData> WallData { get; set; }
-       //public List<PathData> PathData { get; set; }
+        //public List<PathData> PathData { get; set; }
+
+        Grid WalkGrid;
+
+        public void generateMapData()
+        {
+            //Code taken from Sharky Framework
+            var placementGrid = Controller.gameInfo.StartRaw.PlacementGrid;
+            var heightGrid = Controller.gameInfo.StartRaw.TerrainHeight;
+            var pathingGrid = Controller.gameInfo.StartRaw.PathingGrid;
+            MapWidth = pathingGrid.Size.X;
+            MapHeight = pathingGrid.Size.Y;
+            Map = new Dictionary<int, Dictionary<int, MapCell>>();
+            for (var x = 0; x < pathingGrid.Size.X; x++)
+            {
+                var row = new Dictionary<int, MapCell>();
+                for (var y = 0; y < pathingGrid.Size.Y; y++)
+                {
+                    var walkable = GetDataValueBit(pathingGrid, x, y);
+                    var height = GetDataValueByte(heightGrid, x, y);
+                    var placeable = GetDataValueBit(placementGrid, x, y);
+                    row[y] = new MapCell { X = x, Y = y, Walkable = walkable, TerrainHeight = height, Buildable = placeable, HasCreep = false, CurrentlyBuildable = placeable, InEnemyVision = false, InSelfVision = false, Visibility = 0, LastFrameVisibility = 0, PoweredBySelfPylon = false, LastFrameAlliesTouched = 0, PathBlocked = false };
+                }
+                Map[x] = row;
+            }
+            MapName = Controller.gameInfo.MapName;
+        }
+        bool GetDataValueBit(ImageData data, int x, int y)
+        {
+            int pixelID = x + y * data.Size.X;
+            int byteLocation = pixelID / 8;
+            int bitLocation = pixelID % 8;
+            return ((data.Data[byteLocation] & 1 << (7 - bitLocation)) == 0) ? false : true;
+        }
+        int GetDataValueByte(ImageData data, int x, int y)
+        {
+            int pixelID = x + y * data.Size.X;
+            int rawValue = data.Data[pixelID];
+            int heightValue = (rawValue - 128) / 8 + 1;
+            //return data.Data[pixelID];
+            return heightValue;
+        }
+
+        Grid GetMapGrid(int frame)
+        {
+            if (MapLastUpdate < frame)
+            {
+                var gridSize = new GridSize(columns: MapWidth, rows: MapHeight);
+                var cellSize = new Size(Distance.FromMeters(1), Distance.FromMeters(1));
+                var traversalVelocity = Velocity.FromMetersPerSecond(1);
+                WalkGrid = Grid.CreateGridWithLateralAndDiagonalConnections(gridSize, cellSize, traversalVelocity);
+                for (var x = 0; x < MapWidth; x++)
+                {
+                    for (var y = 0; y < MapHeight; y++)
+                    {
+                        if (!Map[x][y].Walkable)
+                        {
+                            WalkGrid.DisconnectNode(new GridPosition(x, y));
+                            continue;
+                        }
+
+                        //var vector = new Vector2(x, y);
+                        //if (ActiveUnitData.NeutralUnits.Values.Any(u => u.Attributes.Contains(SC2APIProtocol.Attribute.Structure) && !u.UnitTypeData.Name.Contains("Unbuildable") && Vector2.DistanceSquared(u.Position, vector) <= u.Unit.Radius * u.Unit.Radius))
+                        //{
+                        //    WalkGrid.DisconnectNode(new GridPosition(x, y));
+                        //}
+                    }
+                }
+                MapLastUpdate = frame;
+            }
+            return WalkGrid;
+        }
+
+       //public List<Vector2> GetPath(Vector2 start, Vector2 end) 
+       //{
+       //    var pathFinder = new PathFinder();
+       //    var path = pathFinder.FindPath(new GridPosition(0, 0), new GridPosition(9, 9), grid);
+       //    Console.WriteLine($"type: {path.Type}, distance: {path.Distance}, duration {path.Duration}");
+       //    //yourClass.TraversePath(path.Edges);
+       //}
+
+
+
     }
 }

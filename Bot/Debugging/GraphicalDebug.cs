@@ -57,6 +57,7 @@ namespace Bot
                 foreach (var cube in Cubes)
                 {
                     DrawRequest.Debug.Debug[0].Draw.Boxes.Add(cube);
+                    //Console.WriteLine($"Drawing cube with color: R={cube.Color.R}, G={cube.Color.G}, B={cube.Color.B}");
                 }
             }
             if (Spheres.Count() > 0)
@@ -113,6 +114,15 @@ namespace Bot
             Spheres.Add(new DebugSphere() { Color = color,P = pos, R = radius });
         }
 
+        public void DrawSphere(Vector3 position, float radius)
+        {
+            if (!Debug) { return; }
+            Point pos = new Point { X = position.X, Y = position.Y, Z = position.Z };
+            var color = new Color { R = 100, B = 100, G = 255 };
+            //DrawRequest.Debug.Debug[0].Draw.Spheres.Add(new DebugSphere() { Color = color,P = pos, R = radius });
+            Spheres.Add(new DebugSphere() { Color = color, P = pos, R = radius });
+        }
+
         public void DrawCube(Unit unit, float size)
         {
             if (!Debug) { return; }
@@ -141,6 +151,19 @@ namespace Bot
             Cubes.Add(new DebugBox() { Color = color, Max = max, Min = min });
         }
 
+        public void DrawCube(Vector3 position, float size, Color colour)
+        {
+            if (!Debug) { return; }
+            float offset = size / 2;
+            //max
+            Point max = new Point { X = position.X + offset, Y = position.Y + offset, Z = position.Z + 0 };
+            //min
+            Point min = new Point { X = position.X - offset, Y = position.Y - offset, Z = position.Z };
+            //colour
+            //DrawRequest.Debug.Debug[0].Draw.Boxes.Add(new DebugBox() {Color = color, Max = max, Min = min });
+            Cubes.Add(new DebugBox() { Color = colour, Max = max, Min = min });
+        }
+
         public void DrawLine(Unit unit, Unit unit2) 
         {
             if (!Debug) { return; }
@@ -163,6 +186,18 @@ namespace Bot
 
             Line line = new Line() { P0 = p0, P1 = p1 };
             Lines.Add(new DebugLine() { Color = color, Line = line });
+        }
+
+        public void DrawLine(Vector3 start, Vector3 end, Color colour)
+        {
+            if (!Debug) { return; }
+
+            Point p0 = new Point { X = start.X, Y = start.Y, Z = start.Z + 0.05f };
+            Point p1 = new Point { X = end.X, Y = end.Y, Z = end.Z + 0.05f };
+            var color = new Color { R = 0, B = 0, G = 255 };
+
+            Line line = new Line() { P0 = p0, P1 = p1 };
+            Lines.Add(new DebugLine() { Color = colour, Line = line });
         }
 
 
@@ -232,22 +267,40 @@ namespace Bot
                 }
            
                 DrawLine(start, end);
-                drawBuildingGrid();
+                //drawGrids();
             }
             
         }
 
-        public void drawBuildingGrid() 
+        public void drawGrids() 
         {
             //draw a grid of where buildings can be placed
             //draw a grid of where buildings can be placed
             var cc = Controller.GetUnits(Units.ResourceCenters, onlyCompleted: false).First();
-            for (int x = 200; x > 100; x -= 1)
+            for (int x = 200; x > 0; x -= 1)
             {
-                for (int y = 200; y > 100; y -= 1)
+                for (int y = 200; y > 0; y -= 1)
                 {
+                    if (Controller.frame % 100 < 50)
+                    {
+                        if (Controller.GetTilePlacable(x, y))
+                        {
+                            Color colour = new Color { R = 255, G = 100, B = 100 };
+                            DrawCube(new Vector3(x + 0.5f, y + 0.5f, cc.Position.Z + 0.05f), 1, colour);
+                        }
+                    }
+                    else 
+                    {
+                        if (Controller.GetTileWalkable(x, y))
+                        {
+                            Color colour = new Color { R = 100, G = 100, B = 255};
+                            //DrawText($"Color : R:{colour.R} G:{colour.G} B:{colour.B}");
+                            DrawCube(new Vector3(x, y, cc.Position.Z + 0.05f), 1, colour);
+                        }
+                    }
                     //MapHeight(x, y);
-                    DrawCube(new Vector3(x, y, cc.Position.Z+0.05f), 1);
+
+                    //DrawCube(new Vector3(x, y, cc.Position.Z+0.05f), 1);
                 }
             }
         }
@@ -261,5 +314,6 @@ namespace Bot
                 DrawRequest.Debug.Debug[0].Draw.Text.Add(new DebugText() { Text = text, Size = size, VirtualPos = new Point() { X = x, Y = y } });
             }
         }
+
     }
 }

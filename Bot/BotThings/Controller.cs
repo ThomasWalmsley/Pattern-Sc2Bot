@@ -14,6 +14,7 @@ namespace Bot {
 
         //tomw
         public static GraphicalDebug gdebug = new GraphicalDebug();
+
         public static List<Vector3> PathToEnemyBase = new List<Vector3>();
 
         //editable
@@ -563,7 +564,57 @@ namespace Bot {
 
             Logger.Info("Constructing: {0} @ {1} / {2}", GetUnitName(unitType), constructionSpot.X, constructionSpot.Y);
         }
- 
+
+        public static void ConstructOnLocation(uint unitType, Vector3 location) 
+        {
+            var worker = GetAvailableWorker(location);
+            if (worker == null)
+            {
+                Logger.Error("Unable to find worker to construct: {0}", GetUnitName(unitType));
+                return;
+            }
+
+            var abilityID = Abilities.GetID(unitType);
+            var constructAction = CreateRawUnitCommand(abilityID);
+            constructAction.ActionRaw.UnitCommand.UnitTags.Add(worker.Tag);
+            constructAction.ActionRaw.UnitCommand.TargetWorldSpacePos = new Point2D();
+            constructAction.ActionRaw.UnitCommand.TargetWorldSpacePos.X = location.X;
+            constructAction.ActionRaw.UnitCommand.TargetWorldSpacePos.Y = location.Y;
+            AddAction(constructAction);
+
+            Logger.Info("Constructing: {0} @ {1} / {2}", GetUnitName(unitType), location.X, location.Y);
+        }
+
+        public static bool GetTilePlacable(int x, int y)
+        {
+            ImageData PlacementGrid = gameInfo.StartRaw.PlacementGrid;
+
+            if (x < 0 || y < 0 || x >= PlacementGrid.Size.X || y >= PlacementGrid.Size.Y)
+            {
+                return false;
+            }
+            int pixelID = x + y * PlacementGrid.Size.X;
+            int byteLocation = pixelID / 8;
+            int bitLocation = pixelID % 8;
+            var result = ((PlacementGrid.Data[byteLocation] & 1 << (7 - bitLocation)) == 0) ? 0 : 1;
+            return result != 0;
+        }
+
+        public static bool GetTileWalkable(int x, int y)
+        {
+            ImageData PathingGrid = gameInfo.StartRaw.PathingGrid;
+
+            if (x < 0 || y < 0 || x >= PathingGrid.Size.X || y >= PathingGrid.Size.Y)
+            {
+                return false;
+            }
+            int pixelID = x + y * PathingGrid.Size.X;
+            int byteLocation = pixelID / 8;
+            int bitLocation = pixelID % 8;
+            var result = ((PathingGrid.Data[byteLocation] & 1 << (7 - bitLocation)) == 0) ? 0 : 1;
+            return result != 0;
+        }
+
 
     }
 }
