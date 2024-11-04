@@ -130,19 +130,31 @@ namespace Bot {
             {
                 mapData.GetMapGrid((int)Controller.frame);
             }
+
+            List<List<Vector2>> listPath = new List<List<Vector2>>();
+
             var resourceCenters = Controller.GetUnits(Units.ResourceCenters);
             var rcPosition = resourceCenters[0].Position;
             Vector2 startPath = new Vector2 { X = rcPosition.X+4, Y = rcPosition.Y };
-            Vector2 endPath = new Vector2 { X = Controller.enemyLocations[0].X, Y = Controller.enemyLocations[0].Y };
-            //List<Vector2> path = mapData.GetPath(rcPosition.ToVector2(), Controller.enemyLocations[0].ToVector2());
-            List<Vector2> path = mapData.GetPath(startPath, endPath);
-            //List<Vector2> path = mapData.GetPath(new Vector2 {X = 73, Y = 37 }, new Vector2 {X = 77, Y = 67 });
-            for (int i = 0; i < path.Count - 1; i++) 
+            Vector2 endPath = new Vector2();
+
+            foreach (var location in Controller.gameInfo.StartRaw.StartLocations)
             {
-                Vector3 start = new Vector3 { X = path[i].X, Y = path[i].Y, Z = mapData.Map[(int)path[i].X][(int)path[i].Y].TerrainHeight + 1 };
-                Vector3 end = new Vector3 { X = path[i+1].X, Y = path[i+1].Y, Z = mapData.Map[(int)path[i+1].X][(int)path[i+1].Y].TerrainHeight + 1};
-                Controller.gdebug.DrawLine(start, end, new Color { R = 255, G = 100, B = 100 });
+                endPath = new Vector2 { X = location.X, Y = location.Y };
+                List<Vector2> path = mapData.GetPath(startPath, endPath);
+                listPath.Add(path);
             }
+
+            foreach (var path in listPath) 
+            {
+                for (int i = 0; i < path.Count - 1; i++)
+                {
+                    Vector3 start = new Vector3 { X = path[i].X, Y = path[i].Y, Z = mapData.Map[(int)path[i].X][(int)path[i].Y].TerrainHeight + 1 };
+                    Vector3 end = new Vector3 { X = path[i + 1].X, Y = path[i + 1].Y, Z = mapData.Map[(int)path[i + 1].X][(int)path[i + 1].Y].TerrainHeight + 1 };
+                    Controller.gdebug.DrawLine(start, end, new Color { R = 255, G = 100, B = 100 });
+                }
+            }
+
         }
 
 
