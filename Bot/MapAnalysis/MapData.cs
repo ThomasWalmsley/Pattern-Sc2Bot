@@ -20,6 +20,7 @@ namespace Bot.MapAnalysis
         public Dictionary<int, Dictionary<int, MapCell>> Map { get; set; }
         public string MapName { get; set; }
         public int MapLastUpdate { get; set; }
+
         //public List<WallData> WallData { get; set; }
         //public List<PathData> PathData { get; set; }
 
@@ -64,7 +65,7 @@ namespace Bot.MapAnalysis
             return heightValue;
         }
 
-        Grid GetMapGrid(int frame)
+        public Grid GetMapGrid(int frame)
         {
             if (MapLastUpdate < frame)
             {
@@ -94,13 +95,15 @@ namespace Bot.MapAnalysis
             return WalkGrid;
         }
 
-       //public List<Vector2> GetPath(Vector2 start, Vector2 end) 
-       //{
-       //    var pathFinder = new PathFinder();
-       //    var path = pathFinder.FindPath(new GridPosition(0, 0), new GridPosition(9, 9), grid);
-       //    Console.WriteLine($"type: {path.Type}, distance: {path.Distance}, duration {path.Duration}");
-       //    //yourClass.TraversePath(path.Edges);
-       //}
+       public List<Vector2> GetPath(Vector2 start, Vector2 end) 
+       {
+           List<Vector2> listOfEdges = new List<Vector2>();
+           var pathFinder = new PathFinder();
+           var path = pathFinder.FindPath(new GridPosition((int)start.X, (int)start.Y), new GridPosition((int)end.X,(int)end.Y), WalkGrid);
+           Console.WriteLine($"type: {path.Type}, distance: {path.Distance}, duration {path.Duration}");
+            //return path.Edges.Select(e => new Vector2(e.X, e.Y)).ToList();
+            return path.Edges.Select(e => new Vector2(e.End.Position.X, e.End.Position.Y)).ToList();
+        }
 
 
 

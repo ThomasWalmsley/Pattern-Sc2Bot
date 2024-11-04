@@ -256,21 +256,21 @@ namespace Bot
 
             // Draw Lines Between Expansions
             // Assuming you have methods to get the self and enemy start locations
-            var resourceCenters = Controller.GetUnits(Units.ResourceCenters);
-            if (resourceCenters.Count > 0) {
-                var rcPosition = resourceCenters[0].Position;
-                var enemyStartLocation = Controller.enemyLocations[0];
-                Vector3 start = new Vector3(rcPosition.X,rcPosition.Y,rcPosition.Z + 0.05f);
-                Vector3 end = new Vector3(enemyStartLocation.X, enemyStartLocation.Y, rcPosition.Z + 0.05f);//use same height as your townhall
-                if (Controller.frame %22 == 0){
-                    //Logger.Info($"Drawing line between expansions:{start.ToString()} , {end.ToString()}");
-                }
-           
-                DrawLine(start, end);
+       //   var resourceCenters = Controller.GetUnits(Units.ResourceCenters);
+       //   if (resourceCenters.Count > 0) {
+       //       var rcPosition = resourceCenters[0].Position;
+       //       var enemyStartLocation = Controller.enemyLocations[0];
+       //       Vector3 start = new Vector3(rcPosition.X,rcPosition.Y,rcPosition.Z + 0.05f);
+       //       Vector3 end = new Vector3(enemyStartLocation.X, enemyStartLocation.Y, rcPosition.Z + 0.05f);//use same height as your townhall
+       //       if (Controller.frame %22 == 0){
+       //           //Logger.Info($"Drawing line between expansions:{start.ToString()} , {end.ToString()}");
+       //       }
+       //  
+       //       DrawLine(start, end);
                 //drawGrids();
-            }
-            
         }
+
+           
 
         public void drawGrids() 
         {

@@ -111,10 +111,38 @@ namespace Bot {
             }
 
 
-            DrawGrid(Controller.obs.Observation.RawData.Player.Camera.ToVector3());
+            //DrawGrid(Controller.obs.Observation.RawData.Player.Camera.ToVector3());
+
+            if (Controller.frame > 1) 
+            {
+                DrawPaths();
+            }
+            
 
             ccS.onFrame();
             return Controller.CloseFrame();
+        }
+
+
+        public void DrawPaths() 
+        {
+            if (mapData.MapLastUpdate == 0)
+            {
+                mapData.GetMapGrid((int)Controller.frame);
+            }
+            var resourceCenters = Controller.GetUnits(Units.ResourceCenters);
+            var rcPosition = resourceCenters[0].Position;
+            Vector2 startPath = new Vector2 { X = rcPosition.X+4, Y = rcPosition.Y };
+            Vector2 endPath = new Vector2 { X = Controller.enemyLocations[0].X, Y = Controller.enemyLocations[0].Y };
+            //List<Vector2> path = mapData.GetPath(rcPosition.ToVector2(), Controller.enemyLocations[0].ToVector2());
+            List<Vector2> path = mapData.GetPath(startPath, endPath);
+            //List<Vector2> path = mapData.GetPath(new Vector2 {X = 73, Y = 37 }, new Vector2 {X = 77, Y = 67 });
+            for (int i = 0; i < path.Count - 1; i++) 
+            {
+                Vector3 start = new Vector3 { X = path[i].X, Y = path[i].Y, Z = mapData.Map[(int)path[i].X][(int)path[i].Y].TerrainHeight + 1 };
+                Vector3 end = new Vector3 { X = path[i+1].X, Y = path[i+1].Y, Z = mapData.Map[(int)path[i+1].X][(int)path[i+1].Y].TerrainHeight + 1};
+                Controller.gdebug.DrawLine(start, end, new Color { R = 255, G = 100, B = 100 });
+            }
         }
 
 
@@ -152,7 +180,7 @@ namespace Bot {
         {
             var height = 12;
 
-            Controller.gdebug.DrawText($"Camera: {(int)camera.X},{(int)camera.Y} : Buildable");
+            Controller.gdebug.DrawText($"Camera: {(int)camera.X},{(int)camera.Y} : Walkable");
             Controller.gdebug.DrawSphere(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, .25f);
             Controller.gdebug.DrawLine(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, new Vector3 { X = camera.X, Y = camera.Y, Z = 0 }, new Color { R = 255, G = 255, B = 255 });
 
@@ -164,7 +192,7 @@ namespace Bot {
                     var color = new Color { R = 255, G = 100, B = 100 };
                     if (point.X + 1 < mapData.MapWidth && point.Y + 1 < mapData.MapHeight && point.X > 0 && point.Y > 0)
                     {
-                        if (mapData.Map[(int)point.X][(int)point.Y].Buildable)
+                        if (mapData.Map[(int)point.X][(int)point.Y].Walkable)
                         {
                             color = new Color { R =100, G = 255, B = 100 };
                         }
