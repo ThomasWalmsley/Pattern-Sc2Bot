@@ -12,8 +12,7 @@ namespace Bot {
     public class Pattern : Bot {
 
         TownHallSupervisor ccS;
-        public MapData mapData;
-        public bool camera = false;
+        public bool camera = true;
         //Tracker unitTracker;
         //UnitsTracker unitTracker;
 
@@ -29,22 +28,16 @@ namespace Bot {
 
                 Unit cc = Controller.GetUnits(Units.ResourceCenters)[0];//get first townhall
                 ccS = new TownHallSupervisor(cc);
-                mapData = new MapData();
-                mapData.generateMapData();
+                MapData.generateMapData();
+                Logger.Info("CommandCenter Placable 69,24: {0}",Controller.CanPlaceTownCenter(69,24));
+                Logger.Info("CommandCenter Placable 69,34: {0}",Controller.CanPlaceTownCenter(69,34));
+                Logger.Info("CommandCenter Placable 69,33: {0}",Controller.CanPlaceTownCenter(69,33));
+                Logger.Info("CommandCenter Placable 69,35: {0}",Controller.CanPlaceTownCenter(69,35));
             }
-
-            if (Controller.frame == Controller.SecsToFrames(1)) 
-                Controller.Chat("gl hf");
 
             UnitsTracker.Instance.Update(Controller.obs);
 
             var structures = Controller.GetUnits(Units.Structures);
-            if (structures.Count == 1) {
-                //last building                
-                if (structures[0].Integrity < 0.4) //being attacked or burning down                 
-                    if (!Controller.chatLog.Contains("gg"))
-                        Controller.Chat("gg");                
-            }
 
             var resourceCenters = Controller.GetUnits(Units.ResourceCenters);
             foreach (var rc in resourceCenters) {
@@ -82,11 +75,6 @@ namespace Bot {
                 Controller.ConstructOnLocation(Units.BARRACKS, new Vector3 { X = 55, Y = 42 });
             }
 
-            //build up to 4 barracks at once
-           // if (Controller.CanConstruct(Units.BARRACKS)) 
-           // if (Controller.GetTotalCount(Units.BARRACKS) < 4)                
-           //     Controller.Construct(Units.BARRACKS);
-           //
             foreach (var barracks in Controller.GetUnits(Units.BARRACKS, onlyCompleted:true)) {
                 if (Controller.CanConstruct(Units.MARINE))
                     barracks.Train(Units.MARINE);
@@ -112,90 +100,21 @@ namespace Bot {
                 }
             }
 
-            if (camera) { DrawGrid(Controller.obs.Observation.RawData.Player.Camera.ToVector3()); }
-            
-
-            if (Controller.frame > 1) 
-            {
-                DrawPaths();
-            }
-
-            //Draw Clusters
-            //List<Unit> mineralFields = new List<Unit>();
-            var mineralFields = Controller.GetUnits(Units.MineralFields,Alliance.Neutral);
-            
-            var geysers = Controller.GetUnits(Units.VESPENE_GEYSER, Alliance.Neutral);
-            var purifiergeysers = Controller.GetUnits(Units.PURIFIER_VESPENE_GEYSER, Alliance.Neutral);
-            var protossgeysers = Controller.GetUnits(Units.PROTOSS_VESPENE_GEYSER, Alliance.Neutral);
-            var richgeysers = Controller.GetUnits(Units.RICH_VESPENE_GEYSER, Alliance.Neutral);
-            var shakurasgeysers = Controller.GetUnits(Units.SHAKURAS_VESPENE_GEYSER, Alliance.Neutral);
-            var spaceplatformgeysers = Controller.GetUnits(Units.SPACE_PLATFORM_GEYSER, Alliance.Neutral);
-
-            geysers.AddRange(purifiergeysers);
-            geysers.AddRange(protossgeysers);
-            geysers.AddRange(richgeysers);
-            geysers.AddRange(shakurasgeysers);
-            geysers.AddRange(spaceplatformgeysers);
-
-            List<Vector2> resources = new List<Vector2>();
-
-            foreach (var mineral in mineralFields) 
-            {
-                resources.Add(new Vector2 { X = mineral.Position.X, Y = mineral.Position.Y });
-            }
-            foreach (var geyser in geysers) 
-            {
-                resources.Add(new Vector2 { X = geyser.Position.X, Y = geyser.Position.Y });
-            }
-
-            DrawClusters(DBSCAN.Cluster(resources, 10,5));
-
-
+            if (camera) { GraphicalDebug.DrawCameraGrid(); }
 
             ccS.onFrame();
             return Controller.CloseFrame();
         }
 
 
-        public void DrawPaths() 
-        {
-            if (mapData.MapLastUpdate == 0)
-            {
-                mapData.GetMapGrid((int)Controller.frame);
-            }
 
-            List<List<Vector2>> listPath = new List<List<Vector2>>();
-
-            var resourceCenters = Controller.GetUnits(Units.ResourceCenters);
-            var rcPosition = resourceCenters[0].Position;
-            Vector2 startPath = new Vector2 { X = rcPosition.X+4, Y = rcPosition.Y };
-            Vector2 endPath = new Vector2();
-
-            foreach (var location in Controller.gameInfo.StartRaw.StartLocations)
-            {
-                endPath = new Vector2 { X = location.X, Y = location.Y };
-                List<Vector2> path = mapData.GetPath(startPath, endPath);
-                listPath.Add(path);
-            }
-
-            foreach (var path in listPath) 
-            {
-                for (int i = 0; i < path.Count - 1; i++)
-                {
-                    Vector3 start = new Vector3 { X = path[i].X, Y = path[i].Y, Z = mapData.Map[(int)path[i].X][(int)path[i].Y].TerrainHeight + 1 };
-                    Vector3 end = new Vector3 { X = path[i + 1].X, Y = path[i + 1].Y, Z = mapData.Map[(int)path[i + 1].X][(int)path[i + 1].Y].TerrainHeight + 1 };
-                    Controller.gdebug.DrawLine(start, end, new Color { R = 255, G = 100, B = 100 });
-                }
-            }
-
-        }
 
 
         public void DrawGrid()
         {
             if(!camera) { return; }
             //loop through the Map Dictionary and draw a square for each cell
-            foreach (var row in mapData.Map)
+            foreach (var row in MapData.Map)
             {
                 foreach (var cell in row.Value.Values)
                 {
@@ -203,7 +122,7 @@ namespace Bot {
                     {
                         if (cell.Walkable)
                         {
-                            Controller.gdebug.DrawCube(new Vector3(cell.X + 0.5f, cell.Y + 0.5f, cell.TerrainHeight), 1, new Color { R = 100, G = 255, B = 100 });
+                            GraphicalDebug.DrawCube(new Vector3(cell.X + 0.5f, cell.Y + 0.5f, cell.TerrainHeight), 1, new Color { R = 100, G = 255, B = 100 });
                             //Console.WriteLine($"Cell: X:{cell.X} Y:{cell.Y} Z:{cell.TerrainHeight}");
                         }
                     }
@@ -211,7 +130,7 @@ namespace Bot {
                     {
                         if (cell.Buildable)
                         {
-                            Controller.gdebug.DrawCube(new Vector3(cell.X + 0.5f, cell.Y + 0.5f, cell.TerrainHeight), 1, new Color { R = 100, G = 100, B = 255 });
+                            GraphicalDebug.DrawCube(new Vector3(cell.X + 0.5f, cell.Y + 0.5f, cell.TerrainHeight), 1, new Color { R = 100, G = 100, B = 255 });
                             //Console.WriteLine($"Cell: X:{cell.X} Y:{cell.Y} Z:{cell.TerrainHeight}");
                         }
                     }
@@ -225,9 +144,9 @@ namespace Bot {
         {
             var height = 13;
 
-            Controller.gdebug.DrawText($"Camera: {(int)camera.X},{(int)camera.Y} : Walkable");
-            Controller.gdebug.DrawSphere(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, .25f);
-            Controller.gdebug.DrawLine(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, new Vector3 { X = camera.X, Y = camera.Y, Z = 0 }, new Color { R = 255, G = 255, B = 255 });
+            GraphicalDebug.DrawText($"Camera: {(int)camera.X},{(int)camera.Y} : Walkable");
+            GraphicalDebug.DrawSphere(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, .25f);
+            GraphicalDebug.DrawLine(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, new Vector3 { X = camera.X, Y = camera.Y, Z = 0 }, new Color { R = 255, G = 255, B = 255 });
 
             for (int x = -5; x <= 5; x++)
             {
@@ -235,16 +154,16 @@ namespace Bot {
                 {
                     var point = new Vector3 { X = (int)camera.X + x, Y = (int)camera.Y + y, Z = height + 1 };
                     var color = new Color { R = 255, G = 100, B = 100 };
-                    if (point.X + 1 < mapData.MapWidth && point.Y + 1 < mapData.MapHeight && point.X > 0 && point.Y > 0)
+                    if (point.X + 1 < MapData.MapWidth && point.Y + 1 < MapData.MapHeight && point.X > 0 && point.Y > 0)
                     {
-                        if (mapData.Map[(int)point.X][(int)point.Y].Walkable)
+                        if (MapData.Map[(int)point.X][(int)point.Y].Walkable)
                         {
                             color = new Color { R =100, G = 255, B = 100 };
                         }
                         point.X = point.X + 0.5f;
                         point.Y = point.Y + 0.5f;
-                        point.Z = mapData.Map[(int)camera.X][(int)camera.Y].TerrainHeight+0.05f;
-                        Controller.gdebug.DrawCube(point, 1, color);
+                        point.Z = MapData.Map[(int)camera.X][(int)camera.Y].TerrainHeight+0.05f;
+                        GraphicalDebug.DrawCube(point, 1, color);
                         //Controller.gdebug.DrawLine(point, new Vector3 { X = point.X + 1, Y = point.Y, Z = height + 1 }, color);
                         //Controller.gdebug.DrawLine(point, new Vector3 { X = point.X, Y = point.Y + 1, Z = height + 1 }, color);
                         //Controller.gdebug.DrawLine(point, new Vector3 { X = point.X, Y = point.Y + 1, Z = 1 }, color);
@@ -257,13 +176,13 @@ namespace Bot {
         public void DrawClusters(List<List<Vector2>> clusters)
         {
             //Experiment to see if clustering the minerals and then the mineral centroid and the geysers works better
-            List<Vector2> CentroidsAndGas = new List<Vector2>();
+            //List<Vector2> CentroidsAndGas = new List<Vector2>();
             //Console.WriteLine(clusters.Count());
             foreach (var cluster in clusters)
             {
                 foreach (var point in cluster)
                 {
-                    Controller.gdebug.DrawCube(new Vector3 { X = point.X, Y = point.Y, Z = mapData.Map[(int)point.X][(int)point.Y].TerrainHeight + 1 }, 1, new Color { R = 255, G = 100, B = 100 });
+                    GraphicalDebug.DrawCube(new Vector3 { X = point.X, Y = point.Y, Z = MapData.Map[(int)point.X][(int)point.Y].TerrainHeight + 1 }, 1, new Color { R = 255, G = 100, B = 100 });
                 }
                 Vector2 centroid = CalculateCentroid(cluster);
 
@@ -271,44 +190,10 @@ namespace Bot {
                 float x = (int)centroid.X + 0.5f;
                 float y = (int)centroid.Y + 0.5f;
 
-                CentroidsAndGas.Add(centroid);
+                //CentroidsAndGas.Add(centroid);
 
                 //Controller.gdebug.DrawSphere(new Vector3 { X = x, Y = y, Z = mapData.Map[(int)centroid.X][(int)centroid.Y].TerrainHeight + 0.05f }, 1);
-                //DetermineFinalLocation(new Vector2 {X=x, Y =y },cluster);
-            }
-
-
-            var geysers = Controller.GetUnits(Units.VESPENE_GEYSER, Alliance.Neutral);
-            var purifiergeysers = Controller.GetUnits(Units.PURIFIER_VESPENE_GEYSER, Alliance.Neutral);
-            var protossgeysers = Controller.GetUnits(Units.PROTOSS_VESPENE_GEYSER, Alliance.Neutral);
-            var richgeysers = Controller.GetUnits(Units.RICH_VESPENE_GEYSER, Alliance.Neutral);
-            var shakurasgeysers = Controller.GetUnits(Units.SHAKURAS_VESPENE_GEYSER, Alliance.Neutral);
-            var spaceplatformgeysers = Controller.GetUnits(Units.SPACE_PLATFORM_GEYSER, Alliance.Neutral);
-
-            geysers.AddRange(purifiergeysers);
-            geysers.AddRange(protossgeysers);
-            geysers.AddRange(richgeysers);
-            geysers.AddRange(shakurasgeysers);
-            geysers.AddRange(spaceplatformgeysers);
-
-            foreach (var geyser in geysers)
-            {
-                CentroidsAndGas.Add(new Vector2 { X = geyser.Position.X, Y = geyser.Position.Y });
-            }
-            var newClusters = DBSCAN.Cluster(CentroidsAndGas, 10, 2);
-            foreach (var cluster in newClusters) 
-            {
-                foreach (var point in cluster)
-                {
-                    Controller.gdebug.DrawCube(new Vector3 { X = point.X, Y = point.Y, Z = mapData.Map[(int)point.X][(int)point.Y].TerrainHeight + 1 }, 1, new Color { R = 255, G = 100, B = 100 });
-                }
-                Vector2 centroid = CalculateCentroid(cluster);
-
-                // Round to nearest half position. bases are 5x5 and therefore always centered in the middle of a tile.
-                float x = (int)centroid.X + 0.5f;
-                float y = (int)centroid.Y + 0.5f;
-                Controller.gdebug.DrawSphere(new Vector3 { X = x, Y = y, Z = mapData.Map[(int)centroid.X][(int)centroid.Y].TerrainHeight + 0.05f }, 1);
-                DetermineFinalLocation(new Vector2 { X = x, Y = y }, cluster);
+                DetermineFinalLocation(new Vector2 {X=x, Y =y },cluster);
             }
         }
 
@@ -328,58 +213,19 @@ namespace Bot {
                     closest = mineralField;
                 }
             }
-
-            // Move the estimated base position slightly away from the closest mineral.
-            // This ensures that the base location will not end up on the far side of the minerals.
-           // if (closest.X < baseLocation.X)
-           // {
-           //     baseLocation.X += 2;
-           // }
-           // else if (closest.X > baseLocation.X)
-           // {
-           //     baseLocation.X -= 2;
-           // }
-           // if (closest.Y < baseLocation.Y)
-           // {
-           //     baseLocation.Y += 2;
-           // }
-           // else if (closest.Y > baseLocation.Y)
-           // {
-           //     baseLocation.Y -= 2;
-           // }
+            GraphicalDebug.DrawCube(new Vector3 { X = closest.X, Y = closest.Y, Z = MapData.Map[(int)closest.X][(int)closest.Y].TerrainHeight + 0.05f }, 1,new Color {R = 100,G=100,B=255 });
+            GraphicalDebug.DrawSphere(new Vector3 { X = baseLocation.X, Y = baseLocation.Y, Z = MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight + 0.05f }, 1);
 
             var closestLocation = 1000000f;
             var approximateLocation = baseLocation;
 
-            for (int i = -6; i < 6; i++) 
+            for (int i = -4; i < 4; i++) 
             {
-                for (int j = -6; j < 6; j++)
+                for (int j = -4; j < 4; j++)
                 {
                     Vector2 newPos = new Vector2 { X = approximateLocation.X + i, Y = approximateLocation.Y + j };
-                    Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
+                    GraphicalDebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = MapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
                 }
-                // Point2D newPos;
-                // newPos = new Point2D { X = approximateLocation.X + i, Y = approximateLocation.Y + i };
-                // Controller.gdebug.DrawCube(new Vector3 {X = newPos.X, Y = newPos.Y,Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f },1);
-                // newPos = new Point2D { X = approximateLocation.X + i, Y = approximateLocation.Y - i };
-                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
-                // newPos = new Point2D { X = approximateLocation.X - i, Y = approximateLocation.Y + i };
-                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
-                // newPos = new Point2D { X = approximateLocation.X - i, Y = approximateLocation.Y - i };
-                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
-                // newPos = new Point2D { X = approximateLocation.X - i, Y = approximateLocation.Y};
-                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
-                // newPos = new Point2D { X = approximateLocation.X + i, Y = approximateLocation.Y};
-                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
-                // newPos = new Point2D { X = approximateLocation.X, Y = approximateLocation.Y - i };
-                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
-                // newPos = new Point2D { X = approximateLocation.X, Y = approximateLocation.Y + i };
-                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
-                // 
-                // 
-                // //Offset Positions
-                // newPos = new Point2D { X = approximateLocation.X+1, Y = approximateLocation.Y + i };
-                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
             }
         }
 

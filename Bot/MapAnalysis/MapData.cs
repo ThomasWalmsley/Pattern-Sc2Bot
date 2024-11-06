@@ -13,20 +13,20 @@ using System.Numerics;
 
 namespace Bot.MapAnalysis
 {
-    public class MapData
+    public static class MapData
     {
-        public int MapWidth { get; set; }
-        public int MapHeight { get; set; }
-        public Dictionary<int, Dictionary<int, MapCell>> Map { get; set; }
-        public string MapName { get; set; }
-        public int MapLastUpdate { get; set; }
+        public static int MapWidth { get; set; }
+        public static int MapHeight { get; set; }
+        public static Dictionary<int, Dictionary<int, MapCell>> Map { get; set; }
+        public static string MapName { get; set; }
+        public static int MapLastUpdate { get; set; }
 
         //public List<WallData> WallData { get; set; }
         //public List<PathData> PathData { get; set; }
 
-        Grid WalkGrid;
+        static Grid WalkGrid;
 
-        public void generateMapData()
+        public static void generateMapData()
         {
             //Code taken from Sharky Framework
             var placementGrid = Controller.gameInfo.StartRaw.PlacementGrid;
@@ -49,14 +49,16 @@ namespace Bot.MapAnalysis
             }
             MapName = Controller.gameInfo.MapName;
         }
-        bool GetDataValueBit(ImageData data, int x, int y)
+
+
+        static bool GetDataValueBit(ImageData data, int x, int y)
         {
             int pixelID = x + y * data.Size.X;
             int byteLocation = pixelID / 8;
             int bitLocation = pixelID % 8;
             return ((data.Data[byteLocation] & 1 << (7 - bitLocation)) == 0) ? false : true;
         }
-        int GetDataValueByte(ImageData data, int x, int y)
+        static int GetDataValueByte(ImageData data, int x, int y)
         {
             int pixelID = x + y * data.Size.X;
             int rawValue = data.Data[pixelID];
@@ -65,7 +67,7 @@ namespace Bot.MapAnalysis
             return heightValue;
         }
 
-        public Grid GetMapGrid(int frame)
+        public static Grid GetMapGrid(int frame)
         {
             if (MapLastUpdate < frame)
             {
@@ -95,7 +97,7 @@ namespace Bot.MapAnalysis
             return WalkGrid;
         }
 
-       public List<Vector2> GetPath(Vector2 start, Vector2 end) 
+       public static List<Vector2> GetPath(Vector2 start, Vector2 end) 
        {
            List<Vector2> listOfEdges = new List<Vector2>();
            var pathFinder = new PathFinder();
@@ -106,7 +108,10 @@ namespace Bot.MapAnalysis
         }
 
 
-
+        public static List<Vector2> GenerateBaseLocations() 
+        {
+            return new List<Vector2>();
+        }
 
 
     }

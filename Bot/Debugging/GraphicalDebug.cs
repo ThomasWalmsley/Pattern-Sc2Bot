@@ -4,29 +4,30 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Bot.MapAnalysis;
 using SC2APIProtocol;
 //using Bot.Util;
 
 namespace Bot
 {
-    public class GraphicalDebug
+    public static class GraphicalDebug
     {
-        private Request DrawRequest;
+        private static Request DrawRequest;
         public static bool Debug = true;
-        private int TextLine = 0;
-        public GameConnection GameConnection = Program.gc;
+        private static int TextLine = 0;
+        public static GameConnection GameConnection = Program.gc;
 
-        public List<DebugSphere> Spheres = new List<DebugSphere>();
-        public List<DebugBox> Cubes = new List<DebugBox>();
-        public List<DebugText> Texts = new List<DebugText>();
-        public List<DebugLine> Lines = new List<DebugLine>();
+        public static List<DebugSphere> Spheres = new List<DebugSphere>();
+        public static List<DebugBox> Cubes = new List<DebugBox>();
+        public static List<DebugText> Texts = new List<DebugText>();
+        public static List<DebugLine> Lines = new List<DebugLine>();
 
-        public void OpenFrame()
+        public static void OpenFrame()
         {
             DrawRequest = null;
             TextLine = 0;
         }
-        public void CloseFrame() 
+        public static void CloseFrame() 
         {
             
             InitializeDebugCommand();
@@ -37,7 +38,7 @@ namespace Bot
                 GameConnection.SendRequest(DrawRequest).Wait();
         }
 
-        private void InitializeDebugCommand()
+        private static void InitializeDebugCommand()
         {
             if (DrawRequest == null)
             {
@@ -50,7 +51,7 @@ namespace Bot
             }
         }
 
-        public void DrawAll() 
+        public static void DrawAll() 
         {
             if (Cubes.Count()>0)
             {
@@ -89,13 +90,13 @@ namespace Bot
             Lines.Clear();
         }
 
-        public void DrawText(string text)
+        public static void DrawText(string text)
         {
             DrawScreen(text, 20, 0.0f, 0.1f + 0.02f * TextLine);
             TextLine++;
         }
 
-        public void DrawText(string text, Unit unit,uint size) 
+        public static void DrawText(string text, Unit unit,uint size) 
         {
             InitializeDebugCommand();
             var color = new Color { R = 255, B = 255, G = 255 };
@@ -105,7 +106,7 @@ namespace Bot
         }
 
 
-        public void DrawSphere(Unit unit,float radius) 
+        public static void DrawSphere(Unit unit,float radius) 
         {
             if (!Debug) { return; }
             Point pos = new Point { X = unit.Position.X, Y = unit.Position.Y, Z = unit.Position.Z };
@@ -114,7 +115,7 @@ namespace Bot
             Spheres.Add(new DebugSphere() { Color = color,P = pos, R = radius });
         }
 
-        public void DrawSphere(Vector3 position, float radius)
+        public static void DrawSphere(Vector3 position, float radius)
         {
             if (!Debug) { return; }
             Point pos = new Point { X = position.X, Y = position.Y, Z = position.Z };
@@ -123,7 +124,7 @@ namespace Bot
             Spheres.Add(new DebugSphere() { Color = color, P = pos, R = radius });
         }
 
-        public void DrawCube(Unit unit, float size)
+        public static void DrawCube(Unit unit, float size)
         {
             if (!Debug) { return; }
             float offset = size / 2;
@@ -137,7 +138,7 @@ namespace Bot
             Cubes.Add(new DebugBox() { Color = color, Max = max, Min = min });
         }
 
-        public void DrawCube(Vector3 position, float size)
+        public static void DrawCube(Vector3 position, float size)
         {
             if (!Debug) { return; }
             float offset = size / 2;
@@ -151,7 +152,7 @@ namespace Bot
             Cubes.Add(new DebugBox() { Color = color, Max = max, Min = min });
         }
 
-        public void DrawCube(Vector3 position, float size, Color colour)
+        public static void DrawCube(Vector3 position, float size, Color colour)
         {
             if (!Debug) { return; }
             float offset = size / 2;
@@ -164,7 +165,7 @@ namespace Bot
             Cubes.Add(new DebugBox() { Color = colour, Max = max, Min = min });
         }
 
-        public void DrawLine(Unit unit, Unit unit2) 
+        public static void DrawLine(Unit unit, Unit unit2) 
         {
             if (!Debug) { return; }
 
@@ -176,7 +177,7 @@ namespace Bot
             Lines.Add(new DebugLine() { Color = color, Line = line });
         }
 
-        public void DrawLine(Vector3 start, Vector3 end)
+        public static void DrawLine(Vector3 start, Vector3 end)
         {
             if (!Debug) { return; }
 
@@ -188,7 +189,7 @@ namespace Bot
             Lines.Add(new DebugLine() { Color = color, Line = line });
         }
 
-        public void DrawLine(Vector3 start, Vector3 end, Color colour)
+        public static void DrawLine(Vector3 start, Vector3 end, Color colour)
         {
             if (!Debug) { return; }
 
@@ -201,7 +202,7 @@ namespace Bot
         }
 
 
-        public int MapHeight(int x, int y)
+        public static int MapHeight(int x, int y)
         {
             //return 0;
             //return SC2Util.GetDataValue(RaxBot.Main.GameInfo.StartRaw.TerrainHeight, x, y);
@@ -214,7 +215,7 @@ namespace Bot
             return terrainHeightData[index];
         }
 
-        public void TestingStuff() 
+        public static void TestingStuff() 
         {
             //summary - the code i used to test (draw boxes around minerals etc) goes here for now
 
@@ -252,27 +253,11 @@ namespace Bot
                 DrawCube(worker, 1);
                 //DrawText("worker", worker, 20);
             }
-
-
-            // Draw Lines Between Expansions
-            // Assuming you have methods to get the self and enemy start locations
-       //   var resourceCenters = Controller.GetUnits(Units.ResourceCenters);
-       //   if (resourceCenters.Count > 0) {
-       //       var rcPosition = resourceCenters[0].Position;
-       //       var enemyStartLocation = Controller.enemyLocations[0];
-       //       Vector3 start = new Vector3(rcPosition.X,rcPosition.Y,rcPosition.Z + 0.05f);
-       //       Vector3 end = new Vector3(enemyStartLocation.X, enemyStartLocation.Y, rcPosition.Z + 0.05f);//use same height as your townhall
-       //       if (Controller.frame %22 == 0){
-       //           //Logger.Info($"Drawing line between expansions:{start.ToString()} , {end.ToString()}");
-       //       }
-       //  
-       //       DrawLine(start, end);
-                //drawGrids();
         }
 
            
 
-        public void drawGrids() 
+        public static void drawGrids() 
         {
             //draw a grid of where buildings can be placed
             //draw a grid of where buildings can be placed
@@ -298,21 +283,83 @@ namespace Bot
                             DrawCube(new Vector3(x, y, cc.Position.Z + 0.05f), 1, colour);
                         }
                     }
-                    //MapHeight(x, y);
-
-                    //DrawCube(new Vector3(x, y, cc.Position.Z+0.05f), 1);
                 }
             }
         }
 
 
-        public void DrawScreen(string text, uint size, float x, float y)
+        public static void DrawScreen(string text, uint size, float x, float y)
         {
             if (Debug)
             {
                 InitializeDebugCommand();
                 DrawRequest.Debug.Debug[0].Draw.Text.Add(new DebugText() { Text = text, Size = size, VirtualPos = new Point() { X = x, Y = y } });
             }
+        }
+
+
+        public static void DrawCameraGrid()
+        {
+            var height = 13;
+            Vector3 camera = Controller.obs.Observation.RawData.Player.Camera.ToVector3();
+            DrawText($"Camera: {(int)camera.X},{(int)camera.Y} : Walkable");
+            DrawSphere(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, .25f);
+            DrawLine(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, new Vector3 { X = camera.X, Y = camera.Y, Z = 0 }, new Color { R = 255, G = 255, B = 255 });
+
+            for (int x = -5; x <= 5; x++)
+            {
+                for (int y = -5; y <= 5; y++)
+                {
+                    var point = new Vector3 { X = (int)camera.X + x, Y = (int)camera.Y + y, Z = height + 1 };
+                    var color = new Color { R = 255, G = 100, B = 100 };
+                    if (point.X + 1 < MapData.MapWidth && point.Y + 1 < MapData.MapHeight && point.X > 0 && point.Y > 0)
+                    {
+                        if (MapData.Map[(int)point.X][(int)point.Y].Walkable)
+                        {
+                            color = new Color { R = 100, G = 255, B = 100 };
+                        }
+                        point.X = point.X + 0.5f;
+                        point.Y = point.Y + 0.5f;
+                        point.Z = MapData.Map[(int)camera.X][(int)camera.Y].TerrainHeight + 0.05f;
+                        DrawCube(point, 1, color);
+                    }
+                }
+            }
+        }
+
+
+        public static void DrawPaths()
+        {
+            //ALL THIS LOGIC SHOULD NOT BE IN GRAPHICAL DEBUG
+            if (MapData.MapLastUpdate == 0)
+            {
+                MapData.GetMapGrid((int)Controller.frame);
+            }
+
+            List<List<Vector2>> listPath = new List<List<Vector2>>();
+
+            var resourceCenters = Controller.GetUnits(Units.ResourceCenters);
+            var rcPosition = resourceCenters[0].Position;
+            Vector2 startPath = new Vector2 { X = rcPosition.X + 4, Y = rcPosition.Y };
+            Vector2 endPath = new Vector2();
+
+            foreach (var location in Controller.gameInfo.StartRaw.StartLocations)
+            {
+                endPath = new Vector2 { X = location.X, Y = location.Y };
+                List<Vector2> path = MapData.GetPath(startPath, endPath);
+                listPath.Add(path);
+            }
+
+            foreach (var path in listPath)
+            {
+                for (int i = 0; i < path.Count - 1; i++)
+                {
+                    Vector3 start = new Vector3 { X = path[i].X, Y = path[i].Y, Z = MapData.Map[(int)path[i].X][(int)path[i].Y].TerrainHeight + 1 };
+                    Vector3 end = new Vector3 { X = path[i + 1].X, Y = path[i + 1].Y, Z = MapData.Map[(int)path[i + 1].X][(int)path[i + 1].Y].TerrainHeight + 1 };
+                    GraphicalDebug.DrawLine(start, end, new Color { R = 255, G = 100, B = 100 });
+                }
+            }
+
         }
 
     }

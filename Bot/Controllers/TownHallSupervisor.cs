@@ -72,19 +72,19 @@ namespace Bot
                 //Controller.gdebug.DrawCube(worker, 1);
                 if (worker.AssignedMineralPatch != null)
                 {
-                    Controller.gdebug.DrawLine(worker,worker.AssignedMineralPatch);
+                    GraphicalDebug.DrawLine(worker,worker.AssignedMineralPatch);
                 }
             }
             //draw mineral fields
             foreach (var mf in close_mineralfields)
             {
                 //Controller.gdebug.DrawSphere(mf, 1);
-                Controller.gdebug.DrawText(mf.Workers_assigned.Count().ToString(), mf, 20);
+                GraphicalDebug.DrawText(mf.Workers_assigned.Count().ToString(), mf, 20);
                 //Controller.gdebug.DrawText(mf.tag.ToString(), mf, 20);
             }
             foreach (var mf in far_mineralfields) 
             {
-                Controller.gdebug.DrawText(mf.Workers_assigned.Count().ToString(), mf, 20);
+                GraphicalDebug.DrawText(mf.Workers_assigned.Count().ToString(), mf, 20);
             }
 
         }
