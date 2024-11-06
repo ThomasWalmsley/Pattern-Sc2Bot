@@ -73,6 +73,8 @@
     <Compile Include="Controllers\ConstructionController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
+    <Compile Include="MapAnalysis\DBSCAN.cs" />
+    <Compile Include="MapAnalysis\KMeansClustering.cs" />
     <Compile Include="MapAnalysis\MapCell.cs" />
     <Compile Include="MapAnalysis\MapData.cs" />
     <Compile Include="TypeData\Abilities.cs" />

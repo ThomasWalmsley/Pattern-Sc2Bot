@@ -5,13 +5,15 @@ using System.Numerics;
 using Bot.MapAnalysis;
 using System;
 using System.Net.Security;
+using System.Dynamic;
+using System.Resources;
 
 namespace Bot {
     public class Pattern : Bot {
 
         TownHallSupervisor ccS;
         public MapData mapData;
-        public bool camera = true;
+        public bool camera = false;
         //Tracker unitTracker;
         //UnitsTracker unitTracker;
 
@@ -110,14 +112,45 @@ namespace Bot {
                 }
             }
 
-
-            //DrawGrid(Controller.obs.Observation.RawData.Player.Camera.ToVector3());
+            if (camera) { DrawGrid(Controller.obs.Observation.RawData.Player.Camera.ToVector3()); }
+            
 
             if (Controller.frame > 1) 
             {
                 DrawPaths();
             }
+
+            //Draw Clusters
+            //List<Unit> mineralFields = new List<Unit>();
+            var mineralFields = Controller.GetUnits(Units.MineralFields,Alliance.Neutral);
             
+            var geysers = Controller.GetUnits(Units.VESPENE_GEYSER, Alliance.Neutral);
+            var purifiergeysers = Controller.GetUnits(Units.PURIFIER_VESPENE_GEYSER, Alliance.Neutral);
+            var protossgeysers = Controller.GetUnits(Units.PROTOSS_VESPENE_GEYSER, Alliance.Neutral);
+            var richgeysers = Controller.GetUnits(Units.RICH_VESPENE_GEYSER, Alliance.Neutral);
+            var shakurasgeysers = Controller.GetUnits(Units.SHAKURAS_VESPENE_GEYSER, Alliance.Neutral);
+            var spaceplatformgeysers = Controller.GetUnits(Units.SPACE_PLATFORM_GEYSER, Alliance.Neutral);
+
+            geysers.AddRange(purifiergeysers);
+            geysers.AddRange(protossgeysers);
+            geysers.AddRange(richgeysers);
+            geysers.AddRange(shakurasgeysers);
+            geysers.AddRange(spaceplatformgeysers);
+
+            List<Vector2> resources = new List<Vector2>();
+
+            foreach (var mineral in mineralFields) 
+            {
+                resources.Add(new Vector2 { X = mineral.Position.X, Y = mineral.Position.Y });
+            }
+            foreach (var geyser in geysers) 
+            {
+                resources.Add(new Vector2 { X = geyser.Position.X, Y = geyser.Position.Y });
+            }
+
+            DrawClusters(DBSCAN.Cluster(resources, 10,5));
+
+
 
             ccS.onFrame();
             return Controller.CloseFrame();
@@ -190,7 +223,7 @@ namespace Bot {
 
         private void DrawGrid(Vector3 camera)
         {
-            var height = 12;
+            var height = 13;
 
             Controller.gdebug.DrawText($"Camera: {(int)camera.X},{(int)camera.Y} : Walkable");
             Controller.gdebug.DrawSphere(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, .25f);
@@ -210,7 +243,7 @@ namespace Bot {
                         }
                         point.X = point.X + 0.5f;
                         point.Y = point.Y + 0.5f;
-                        point.Z = mapData.Map[(int)camera.X][(int)camera.Y].TerrainHeight;
+                        point.Z = mapData.Map[(int)camera.X][(int)camera.Y].TerrainHeight+0.05f;
                         Controller.gdebug.DrawCube(point, 1, color);
                         //Controller.gdebug.DrawLine(point, new Vector3 { X = point.X + 1, Y = point.Y, Z = height + 1 }, color);
                         //Controller.gdebug.DrawLine(point, new Vector3 { X = point.X, Y = point.Y + 1, Z = height + 1 }, color);
@@ -219,5 +252,163 @@ namespace Bot {
                 }
             }
         }
+
+
+        public void DrawClusters(List<List<Vector2>> clusters)
+        {
+            //Experiment to see if clustering the minerals and then the mineral centroid and the geysers works better
+            List<Vector2> CentroidsAndGas = new List<Vector2>();
+            //Console.WriteLine(clusters.Count());
+            foreach (var cluster in clusters)
+            {
+                foreach (var point in cluster)
+                {
+                    Controller.gdebug.DrawCube(new Vector3 { X = point.X, Y = point.Y, Z = mapData.Map[(int)point.X][(int)point.Y].TerrainHeight + 1 }, 1, new Color { R = 255, G = 100, B = 100 });
+                }
+                Vector2 centroid = CalculateCentroid(cluster);
+
+                // Round to nearest half position. bases are 5x5 and therefore always centered in the middle of a tile.
+                float x = (int)centroid.X + 0.5f;
+                float y = (int)centroid.Y + 0.5f;
+
+                CentroidsAndGas.Add(centroid);
+
+                //Controller.gdebug.DrawSphere(new Vector3 { X = x, Y = y, Z = mapData.Map[(int)centroid.X][(int)centroid.Y].TerrainHeight + 0.05f }, 1);
+                //DetermineFinalLocation(new Vector2 {X=x, Y =y },cluster);
+            }
+
+
+            var geysers = Controller.GetUnits(Units.VESPENE_GEYSER, Alliance.Neutral);
+            var purifiergeysers = Controller.GetUnits(Units.PURIFIER_VESPENE_GEYSER, Alliance.Neutral);
+            var protossgeysers = Controller.GetUnits(Units.PROTOSS_VESPENE_GEYSER, Alliance.Neutral);
+            var richgeysers = Controller.GetUnits(Units.RICH_VESPENE_GEYSER, Alliance.Neutral);
+            var shakurasgeysers = Controller.GetUnits(Units.SHAKURAS_VESPENE_GEYSER, Alliance.Neutral);
+            var spaceplatformgeysers = Controller.GetUnits(Units.SPACE_PLATFORM_GEYSER, Alliance.Neutral);
+
+            geysers.AddRange(purifiergeysers);
+            geysers.AddRange(protossgeysers);
+            geysers.AddRange(richgeysers);
+            geysers.AddRange(shakurasgeysers);
+            geysers.AddRange(spaceplatformgeysers);
+
+            foreach (var geyser in geysers)
+            {
+                CentroidsAndGas.Add(new Vector2 { X = geyser.Position.X, Y = geyser.Position.Y });
+            }
+            var newClusters = DBSCAN.Cluster(CentroidsAndGas, 10, 2);
+            foreach (var cluster in newClusters) 
+            {
+                foreach (var point in cluster)
+                {
+                    Controller.gdebug.DrawCube(new Vector3 { X = point.X, Y = point.Y, Z = mapData.Map[(int)point.X][(int)point.Y].TerrainHeight + 1 }, 1, new Color { R = 255, G = 100, B = 100 });
+                }
+                Vector2 centroid = CalculateCentroid(cluster);
+
+                // Round to nearest half position. bases are 5x5 and therefore always centered in the middle of a tile.
+                float x = (int)centroid.X + 0.5f;
+                float y = (int)centroid.Y + 0.5f;
+                Controller.gdebug.DrawSphere(new Vector3 { X = x, Y = y, Z = mapData.Map[(int)centroid.X][(int)centroid.Y].TerrainHeight + 0.05f }, 1);
+                DetermineFinalLocation(new Vector2 { X = x, Y = y }, cluster);
+            }
+        }
+
+        public void DetermineFinalLocation(Vector2 approxLocation, List<Vector2> cluster)
+        {
+            Vector2 baseLocation = approxLocation;
+
+
+            Vector2 closest = new Vector2();
+            var closestDistance = 10000f;
+            foreach (var mineralField in cluster)
+            {
+                var distance = Math.Abs(mineralField.X - approxLocation.X) + Math.Abs(mineralField.Y - approxLocation.Y);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closest = mineralField;
+                }
+            }
+
+            // Move the estimated base position slightly away from the closest mineral.
+            // This ensures that the base location will not end up on the far side of the minerals.
+           // if (closest.X < baseLocation.X)
+           // {
+           //     baseLocation.X += 2;
+           // }
+           // else if (closest.X > baseLocation.X)
+           // {
+           //     baseLocation.X -= 2;
+           // }
+           // if (closest.Y < baseLocation.Y)
+           // {
+           //     baseLocation.Y += 2;
+           // }
+           // else if (closest.Y > baseLocation.Y)
+           // {
+           //     baseLocation.Y -= 2;
+           // }
+
+            var closestLocation = 1000000f;
+            var approximateLocation = baseLocation;
+
+            for (int i = -6; i < 6; i++) 
+            {
+                for (int j = -6; j < 6; j++)
+                {
+                    Vector2 newPos = new Vector2 { X = approximateLocation.X + i, Y = approximateLocation.Y + j };
+                    Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
+                }
+                // Point2D newPos;
+                // newPos = new Point2D { X = approximateLocation.X + i, Y = approximateLocation.Y + i };
+                // Controller.gdebug.DrawCube(new Vector3 {X = newPos.X, Y = newPos.Y,Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f },1);
+                // newPos = new Point2D { X = approximateLocation.X + i, Y = approximateLocation.Y - i };
+                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
+                // newPos = new Point2D { X = approximateLocation.X - i, Y = approximateLocation.Y + i };
+                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
+                // newPos = new Point2D { X = approximateLocation.X - i, Y = approximateLocation.Y - i };
+                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
+                // newPos = new Point2D { X = approximateLocation.X - i, Y = approximateLocation.Y};
+                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
+                // newPos = new Point2D { X = approximateLocation.X + i, Y = approximateLocation.Y};
+                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
+                // newPos = new Point2D { X = approximateLocation.X, Y = approximateLocation.Y - i };
+                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
+                // newPos = new Point2D { X = approximateLocation.X, Y = approximateLocation.Y + i };
+                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
+                // 
+                // 
+                // //Offset Positions
+                // newPos = new Point2D { X = approximateLocation.X+1, Y = approximateLocation.Y + i };
+                // Controller.gdebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = mapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
+            }
+        }
+
+
+        private Vector2 CalculateCentroid(List<Vector2> units)
+        {
+            float xSum = 0, ySum = 0;
+            foreach (var unit in units)
+            {
+                xSum += unit.X;
+                ySum += unit.Y;
+            }
+
+            return new Vector2
+            {
+                X = xSum / units.Count,
+                Y = ySum / units.Count,
+            };
+        }
+
+        public List<Vector2> GetExpansionLocations() 
+        {
+            List<Vector2> ExpansionLocations = new List<Vector2>();
+
+            //use dbscan????
+
+
+            return ExpansionLocations;
+        }
+
     }
 }

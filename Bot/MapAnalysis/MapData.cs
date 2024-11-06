@@ -100,10 +100,12 @@ namespace Bot.MapAnalysis
            List<Vector2> listOfEdges = new List<Vector2>();
            var pathFinder = new PathFinder();
            var path = pathFinder.FindPath(new GridPosition((int)start.X, (int)start.Y), new GridPosition((int)end.X,(int)end.Y), WalkGrid);
-           Console.WriteLine($"type: {path.Type}, distance: {path.Distance}, duration {path.Duration}");
+           //Console.WriteLine($"type: {path.Type}, distance: {path.Distance}, duration {path.Duration}");
             //return path.Edges.Select(e => new Vector2(e.X, e.Y)).ToList();
             return path.Edges.Select(e => new Vector2(e.End.Position.X, e.End.Position.Y)).ToList();
         }
+
+
 
 
 

@@ -8,9 +8,16 @@ namespace Bot {
         private const Race race = Race.Terran;
 
         // Settings for single player mode.
-//        private static string mapName = "AbyssalReefLE.SC2Map";
-//        private static string mapName = "AbiogenesisLE.SC2Map";
-       private static string mapName = "JagannathaAIE.SC2Map";
+       //private static string mapName = "AbyssalReefLE.SC2Map";
+        //private static string mapName = "AbiogenesisLE.SC2Map";
+
+       //private static string mapName = "JagannathaAIE.SC2Map";
+       //private static string mapName = "BerlingradAIE.SC2Map";
+       //private static string mapName = "DeathAura506.SC2Map";
+       private static string mapName = "EverDream506.SC2Map";
+       //private static string mapName = "GlitteringAshesAIE.SC2Map";
+       //private static string mapName = "GoldenWall506.SC2Map";
+       //private static string mapName = "EternalEmpire506.SC2Map";
 
         //remove comment for multiplayer
         //private static readonly string mapName = "JagannathaAIE";
