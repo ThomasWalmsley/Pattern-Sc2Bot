@@ -33,6 +33,9 @@ namespace Bot {
                 Logger.Info("CommandCenter Placable 69,34: {0}",Controller.CanPlaceTownCenter(69,34));
                 Logger.Info("CommandCenter Placable 69,33: {0}",Controller.CanPlaceTownCenter(69,33));
                 Logger.Info("CommandCenter Placable 69,35: {0}",Controller.CanPlaceTownCenter(69,35));
+
+
+                //saoindsouindapd ungaepefribungp nuj
             }
 
             UnitsTracker.Instance.Update(Controller.obs);
