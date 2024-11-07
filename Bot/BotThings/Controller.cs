@@ -8,6 +8,7 @@ using SC2APIProtocol;
 using System.Linq;
 using Action = SC2APIProtocol.Action;
 using Bot.MapAnalysis;
+using System.Runtime.Versioning;
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace Bot {
@@ -616,50 +617,50 @@ namespace Bot {
         }
 
 
-        public static bool CanPlaceTownCenter(int x, int y) 
+        public static bool CanPlaceTownCenter(float x, float y) 
         {
+
             bool result = true;
             for (int i = -2; i < 2; i++) 
             {
                 for (int j = -2;j<2;j++) 
                 {
-                    GraphicalDebug.DrawCube(new Vector3(x + i, y + j, MapData.Map[x + i][y + j].TerrainHeight), 1);
-                    if (!MapData.Map[x+i][y+j].Buildable) 
+                    if (!MapData.Map[(int)x+i][(int)y+j].Buildable) 
                     {
-                        Console.WriteLine($"Tile {x+i},{y+j} not buildable");
                         result = false;
                     }
                 }
             }
-            if (NearestResource(new Vector2 { X = x, Y = y }) < 5)
+            if (NearestResource(new Vector2 { X = x, Y = y }) <= 6)
             {
-                Console.WriteLine($"Nearest Resource Too Close : {NearestResource(new Vector2 { X = x, Y = y })}");
                 result = false;
             }
             return result;
         }
 
-        public static int NearestResource(Vector3 position) 
+        public static double NearestResource(Vector3 position) 
         {
-            int nearestResource = 10;
-            var resources = GetUnitsInRange(position, Units.MineralFields, 10, Alliance.Neutral);
+            //TODO include vespene geysers in list
+            double nearestResource = 12;
+            List<Unit> resources = GetUnitsInRange(position, Units.MineralFields, 12, Alliance.Neutral);
+            //resources.AddRange(GetUnitsInRange(position, Units.VESPENE_GEYSER, 12, Alliance.Neutral));
             foreach (var resource in resources) 
             {
                 double distance = resource.GetDistance(position);
-                if (distance < nearestResource) { nearestResource = (int)distance; }
+                if (distance < nearestResource) { nearestResource = distance; }
             }
             return nearestResource;
         }
 
-        public static int NearestResource(Vector2 pos)
+        public static double NearestResource(Vector2 pos)
         {
-            int nearestResource = 10;
+            double nearestResource = 12;
             Vector3 position = new Vector3(pos.X,pos.Y, MapData.Map[(int)pos.X][(int)pos.Y].TerrainHeight);
-            var resources = GetUnitsInRange(position, Units.MineralFields, 10, Alliance.Neutral);
+            var resources = GetUnitsInRange(position, Units.MineralFields, 12, Alliance.Neutral);
             foreach (var resource in resources)
             {
                 double distance = resource.GetDistance(position);
-                if (distance < nearestResource) { nearestResource = (int)distance; }
+                if (distance < nearestResource) { nearestResource = distance; }
             }
             return nearestResource;
         }

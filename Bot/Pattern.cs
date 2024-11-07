@@ -12,9 +12,7 @@ namespace Bot {
     public class Pattern : Bot {
 
         TownHallSupervisor ccS;
-        public bool camera = true;
-        //Tracker unitTracker;
-        //UnitsTracker unitTracker;
+        public bool camera = false;
 
         //the following will be called every frame
         //you can increase the amount of frames that get processed for each step at once in Wrapper/GameConnection.cs: stepSize  
@@ -29,10 +27,13 @@ namespace Bot {
                 Unit cc = Controller.GetUnits(Units.ResourceCenters)[0];//get first townhall
                 ccS = new TownHallSupervisor(cc);
                 MapData.generateMapData();
-                Logger.Info("CommandCenter Placable 69,24: {0}",Controller.CanPlaceTownCenter(69,24));
-                Logger.Info("CommandCenter Placable 69,34: {0}",Controller.CanPlaceTownCenter(69,34));
-                Logger.Info("CommandCenter Placable 69,33: {0}",Controller.CanPlaceTownCenter(69,33));
-                Logger.Info("CommandCenter Placable 69,35: {0}",Controller.CanPlaceTownCenter(69,35));
+                //MapData.BaseLocations = MapData.GenerateBaseLocations();
+
+
+                //Logger.Info("CommandCenter Placable 69,24: {0}",Controller.CanPlaceTownCenter(69,24));
+                //Logger.Info("CommandCenter Placable 69,34: {0}",Controller.CanPlaceTownCenter(69,34));
+                //Logger.Info("CommandCenter Placable 69,33: {0}",Controller.CanPlaceTownCenter(69,33));
+                //Logger.Info("CommandCenter Placable 69,35: {0}",Controller.CanPlaceTownCenter(69,35));
             }
 
             UnitsTracker.Instance.Update(Controller.obs);
@@ -99,6 +100,9 @@ namespace Bot {
                     Controller.Attack(army, Controller.enemyLocations[0]);
                 }
             }
+
+
+            MapData.GenerateBaseLocations();
 
             if (camera) { GraphicalDebug.DrawCameraGrid(); }
 

@@ -21,6 +21,8 @@ namespace Bot.MapAnalysis
         public static string MapName { get; set; }
         public static int MapLastUpdate { get; set; }
 
+        public static List<Vector2> BaseLocations { get; set; }
+
         //public List<WallData> WallData { get; set; }
         //public List<PathData> PathData { get; set; }
 
@@ -110,7 +112,75 @@ namespace Bot.MapAnalysis
 
         public static List<Vector2> GenerateBaseLocations() 
         {
-            return new List<Vector2>();
+            List<Vector2> baseLocations = new List<Vector2>();
+
+            //Cluster Minerals
+            var minerals = Controller.GetUnits(Units.MineralFields, Alliance.Neutral);
+            List<Vector2> resources = new List<Vector2>();
+            foreach (var mineral in minerals)
+            {
+                resources.Add(new Vector2 { X = mineral.Position.X, Y = mineral.Position.Y });
+            }
+
+            var mineralClusters = DBSCAN.Cluster(resources,10,6);
+
+            //Find Centroids
+            foreach(var cluster in mineralClusters)
+            {
+                //Find Centroid
+                var x = (int)cluster.Average(v => v.X)+0.5f; 
+                var y = (int)cluster.Average(v => v.Y) + 0.5f;
+                Vector2 centroid = new Vector2(x, y);
+                //add 0.5f to center on tile
+                //x += 0.5f;
+                //y += 0.5f;
+
+
+                //Draw Minerals in Cluster
+                foreach (var mineral in cluster)
+                {                     
+                    GraphicalDebug.DrawCube(new Vector3(mineral.X, mineral.Y, Map[(int)mineral.X][(int)mineral.Y].TerrainHeight + 1), 1);
+                }
+                //Draw Centroid
+                GraphicalDebug.DrawSphere(new Vector3(x, y, Map[(int)x][(int)y].TerrainHeight), 1);
+
+
+                List<Vector2> possibleLocations = new List<Vector2>();
+                //Scan Tiles around centroid
+                for (int i = -7; i < 7; i++)
+                {
+                    for (int j = -7; j < 7; j++)
+                    {
+                        if (Controller.CanPlaceTownCenter(x + i, y + j))
+                        {
+                            //GraphicalDebug.DrawCube(new Vector3(x + i, y + j, Map[(int)x + i][(int)y + j].TerrainHeight), 1, new Color { R = 100, G = 255, B = 100 });
+                            //Console.WriteLine($"BaseLocation Added at {x + i},{y + j}");
+                            possibleLocations.Add(new Vector2((int)x + i, (int)y + j));
+                        }
+                        else 
+                        {
+                            //GraphicalDebug.DrawCube(new Vector3(x + i, y + j, Map[(int)x + i][(int)y + j].TerrainHeight), 1,new Color {R=255,G=100,B=100 });
+                        }
+                    }
+                }
+                //Find Closest Base Location
+                Vector2 closestBase = new Vector2();
+                float closestDistance = 1000;
+                foreach (Vector2 location in possibleLocations) 
+                {
+                    var distance = Vector2.Distance(location,centroid);
+                    if (distance < closestDistance)
+                    {
+                        closestBase = location;
+                        closestDistance = distance;
+                    }
+                }
+                baseLocations.Add(closestBase);
+                GraphicalDebug.DrawSphere(new Vector3(closestBase.X+0.5f, closestBase.Y + 0.5f, Map[(int)closestBase.X][(int)closestBase.Y].TerrainHeight), 2, new Color { R = 100, G = 255, B = 100 });
+                GraphicalDebug.DrawText($"{closestBase.X},{closestBase.Y}", new Vector3(closestBase.X + 0.5f, closestBase.Y + 0.5f, Map[(int)closestBase.X][(int)closestBase.Y].TerrainHeight+1),25);
+            }
+
+            return baseLocations;
         }
 
 

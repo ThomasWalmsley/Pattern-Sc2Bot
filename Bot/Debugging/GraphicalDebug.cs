@@ -105,6 +105,14 @@ namespace Bot
             Texts.Add(new DebugText() { Text = text, Color = color, Size = size, WorldPos = pos});
         }
 
+        public static void DrawText(string text, Vector3 Position, uint size)
+        {
+            InitializeDebugCommand();
+            var color = new Color { R = 255, B = 255, G = 255 };
+            Point pos = new Point() { X = Position.X, Y = Position.Y, Z = Position.Z };
+            DrawRequest.Debug.Debug[0].Draw.Text.Add(new DebugText() { Text = text, Color = color, Size = size, WorldPos = pos });
+            Texts.Add(new DebugText() { Text = text, Color = color, Size = size, WorldPos = pos });
+        }
 
         public static void DrawSphere(Unit unit,float radius) 
         {
@@ -121,6 +129,13 @@ namespace Bot
             Point pos = new Point { X = position.X, Y = position.Y, Z = position.Z };
             var color = new Color { R = 100, B = 100, G = 255 };
             //DrawRequest.Debug.Debug[0].Draw.Spheres.Add(new DebugSphere() { Color = color,P = pos, R = radius });
+            Spheres.Add(new DebugSphere() { Color = color, P = pos, R = radius });
+        }
+
+        public static void DrawSphere(Vector3 position, float radius, Color color)
+        {
+            if (!Debug) { return; }
+            Point pos = new Point { X = position.X, Y = position.Y, Z = position.Z };
             Spheres.Add(new DebugSphere() { Color = color, P = pos, R = radius });
         }
 
