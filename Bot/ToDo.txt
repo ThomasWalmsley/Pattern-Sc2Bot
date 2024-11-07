@@ -11,3 +11,5 @@ Paths : create walkable paths between every base
 Paths : create flyable paths between every base
 
 Buildingplacer : improve the CanBuild check
+
+Fix bug where base locations are put in the wrong location

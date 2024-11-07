@@ -20,7 +20,7 @@ namespace Bot {
         //private static string mapName = "GoldenWall506.SC2Map";
         //private static string mapName = "EternalEmpire506.SC2Map";
 
-        private static string mapName = "Equilibrium513AIE.SC2Map";
+        private static string mapName = "HardLead513AIE.SC2Map";
         //private static string mapName = "GoldenAura513AIE.SC2Map";
         //private static string mapName = "Gresvan513AIE.SC2Map";
         //private static string mapName = "HardLead513AIE.SC2Map";

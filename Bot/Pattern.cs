@@ -36,6 +36,7 @@ namespace Bot {
                 MapData.GeneratePathsToBases();
 
             }
+            //MapData.GenerateBaseLocations();
 
             UnitsTracker.Instance.Update(Controller.obs);
 
@@ -81,34 +82,53 @@ namespace Bot {
                     barracks.Train(Units.MARINE);
             }
             
-            var army = Controller.GetUnits(Units.ArmyUnits);
-            var enemyarmy = Controller.GetUnits(Units.ArmyUnits,alliance:Alliance.Enemy,onlyVisible: true);
-            if (army.Count > 15)
-            {
-                if (enemyarmy.Count != 0 && Controller.frame % 50 == 0)
-                {
-                    foreach (var marine in army)
-                    {
-                        var closestEnemy = enemyarmy.OrderBy(unit => Vector3.Distance(marine.Position,unit.Position)).First();
-                        Vector3 target = closestEnemy.Position;
-                        List<Unit> marine_army = new List<Unit>() { marine };
-                        Controller.Attack(marine_army, target);
-                    }
-                }
-                else if (Controller.enemyLocations.Count > 0 && Controller.frame % 50 == 0) 
-                {
-                    Controller.Attack(army, Controller.enemyLocations[0]);
-                }
-            }
+            //var army = Controller.GetUnits(Units.ArmyUnits);
+            //var enemyarmy = Controller.GetUnits(Units.ArmyUnits,alliance:Alliance.Enemy,onlyVisible: true);
+            //if (army.Count > 15)
+            //{
+            //    if (enemyarmy.Count != 0 && Controller.frame % 10 == 0)
+            //    {
+            //        foreach (var marine in army)
+            //        {
+            //            var closestEnemy = enemyarmy.OrderBy(unit => Vector3.Distance(marine.Position,unit.Position)).First();
+            //            Vector3 target = closestEnemy.Position;
+            //            List<Unit> marine_army = new List<Unit>() { marine };
+            //            //Controller.Attack(marine_army, target);
+            //            unitController.Attack(marine, Controller.enemyLocations[0]);
+            //            GraphicalDebug.DrawText(marine.RawUnitData.WeaponCooldown.ToString(), marine, 10);
+            //        }
+            //    }
+            //    else if (Controller.enemyLocations.Count > 0 && Controller.frame % 50 == 0) 
+            //    {
+            //        Controller.Attack(army, Controller.enemyLocations[0]);
+            //        //unitController.Attack(marine, Controller.enemyLocations[0]);
+            //    }
+            //}
 
             //check marines rawUnitData is not null
-            var marines = Controller.GetUnits(Units.MARINE);
-            foreach (var marine in marines)
-            {
-                unitController.Attack(marine, Controller.enemyLocations[0]);
-                if (!(marine.RawUnitData == null))
-                    GraphicalDebug.DrawText(marine.RawUnitData.WeaponCooldown.ToString(), marine, 10);
-            }
+           var marines = Controller.GetUnits(Units.MARINE);
+           if (marines.Count() > 15) 
+           {
+                var enemyarmy = Controller.GetUnits(Units.ArmyUnits, alliance: Alliance.Enemy, onlyVisible: true);
+                foreach (var marine in marines)
+               {
+                    if (enemyarmy.Count > 0)
+                    {
+                        var closestEnemy = enemyarmy.OrderBy(unit => Vector3.Distance(marine.Position, unit.Position)).First();
+                        Vector3 target = closestEnemy.Position;
+                        unitController.Attack(marine, target);
+                    }
+                    else 
+                    {
+                        unitController.Attack(marine, Controller.enemyLocations[0]);
+                    }
+                  // if (!(marine.RawUnitData == null))
+                       //GraphicalDebug.DrawText(marine.RawUnitData.WeaponCooldown.ToString(), marine, 10);
+               }
+           }
+
+
+            MapData.GenerateBaseLocations();
 
 
             foreach (var baseLocation in MapData.BaseLocations) 
