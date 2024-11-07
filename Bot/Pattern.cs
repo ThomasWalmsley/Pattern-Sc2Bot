@@ -93,13 +93,11 @@ namespace Bot {
                         Vector3 target = closestEnemy.Position;
                         List<Unit> marine_army = new List<Unit>() { marine };
                         Controller.Attack(marine_army, target);
-                        unitController.Attack(army, target);
                     }
                 }
                 else if (Controller.enemyLocations.Count > 0 && Controller.frame % 50 == 0) 
                 {
                     Controller.Attack(army, Controller.enemyLocations[0]);
-                    unitController.Attack(army, Controller.enemyLocations[0]);
                 }
             }
 
@@ -107,6 +105,7 @@ namespace Bot {
             var marines = Controller.GetUnits(Units.MARINE);
             foreach (var marine in marines)
             {
+                unitController.Attack(marine, Controller.enemyLocations[0]);
                 if (!(marine.RawUnitData == null))
                     GraphicalDebug.DrawText(marine.RawUnitData.WeaponCooldown.ToString(), marine, 10);
             }
