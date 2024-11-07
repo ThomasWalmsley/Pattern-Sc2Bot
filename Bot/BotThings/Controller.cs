@@ -631,32 +631,37 @@ namespace Bot {
                     }
                 }
             }
-            if (NearestResource(new Vector2 { X = x, Y = y }) <= 6)
+            if (NearestMineralDistance(new Vector2 { X = x, Y = y }) <= 6)
+            {
+                result = false;
+            }
+            if (NearestGasDistance(new Vector2 { X = x, Y = y }) <= 7)
             {
                 result = false;
             }
             return result;
         }
 
-        public static double NearestResource(Vector3 position) 
+
+        public static double NearestMineralDistance(Vector2 pos)
         {
-            //TODO include vespene geysers in list
             double nearestResource = 12;
-            List<Unit> resources = GetUnitsInRange(position, Units.MineralFields, 12, Alliance.Neutral);
-            //resources.AddRange(GetUnitsInRange(position, Units.VESPENE_GEYSER, 12, Alliance.Neutral));
-            foreach (var resource in resources) 
+            Vector3 position = new Vector3(pos.X,pos.Y, MapData.Map[(int)pos.X][(int)pos.Y].TerrainHeight);
+            var resources = GetUnitsInRange(position, Units.MineralFields, 12, Alliance.Neutral);
+
+            foreach (var resource in resources)
             {
                 double distance = resource.GetDistance(position);
                 if (distance < nearestResource) { nearestResource = distance; }
             }
             return nearestResource;
         }
-
-        public static double NearestResource(Vector2 pos)
+        public static double NearestGasDistance(Vector2 pos)
         {
             double nearestResource = 12;
-            Vector3 position = new Vector3(pos.X,pos.Y, MapData.Map[(int)pos.X][(int)pos.Y].TerrainHeight);
-            var resources = GetUnitsInRange(position, Units.MineralFields, 12, Alliance.Neutral);
+            Vector3 position = new Vector3(pos.X, pos.Y, MapData.Map[(int)pos.X][(int)pos.Y].TerrainHeight);
+            var resources = GetUnitsInRange(position, Units.GasGeysers, 12, Alliance.Neutral);
+
             foreach (var resource in resources)
             {
                 double distance = resource.GetDistance(position);

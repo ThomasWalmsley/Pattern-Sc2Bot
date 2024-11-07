@@ -130,10 +130,29 @@ namespace Bot.MapAnalysis
                 //Find Centroid
                 var x = (int)cluster.Average(v => v.X)+0.5f; 
                 var y = (int)cluster.Average(v => v.Y) + 0.5f;
+                
+                //move centroid slightly so the spot isn't on the wrong side of the minerals
+                var nearestMineral = cluster.OrderBy(v => Vector2.Distance(v, new Vector2(x, y))).First();
+                GraphicalDebug.DrawSphere(new Vector3(nearestMineral.X, nearestMineral.Y, Map[(int)nearestMineral.X][(int)nearestMineral.Y].TerrainHeight+0.5f), 1);
+                
                 Vector2 centroid = new Vector2(x, y);
-                //add 0.5f to center on tile
-                //x += 0.5f;
-                //y += 0.5f;
+
+                if (nearestMineral.X < x)
+                {
+                    centroid.X += 2;
+                }
+                else if (nearestMineral.X > x) 
+                {
+                    centroid.X -= 2;
+                }
+                if (nearestMineral.Y < y)
+                {
+                    centroid.Y += 2;
+                }
+                else if (nearestMineral.Y > y)
+                {
+                    centroid.Y -= 2;
+                }
 
 
                 //Draw Minerals in Cluster
