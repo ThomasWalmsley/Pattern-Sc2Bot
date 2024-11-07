@@ -70,8 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\BaseController.cs" />
-    <Compile Include="Controllers\ConstructionController.cs" />
-    <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="MapAnalysis\DBSCAN.cs" />
     <Compile Include="MapAnalysis\KMeansClustering.cs" />
@@ -131,6 +129,9 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Pattern\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ToDo.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

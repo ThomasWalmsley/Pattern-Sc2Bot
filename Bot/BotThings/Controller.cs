@@ -24,7 +24,7 @@ namespace Bot {
         //don't edit
         private static readonly List<Action> actions = new List<Action>();
         private static readonly Random random = new Random();
-        private const double FRAMES_PER_SECOND = 22.4;
+        public const double FRAMES_PER_SECOND = 22.4;
 
         public static ResponseGameInfo gameInfo;
         public static ResponseData gameData;
@@ -135,6 +135,17 @@ namespace Bot {
             foreach (var unit in units)
                 action.ActionRaw.UnitCommand.UnitTags.Add(unit.Tag);
             AddAction(action);
+        }
+
+        public static void StutterStep(List<Unit> units, Vector3 target) 
+        {
+            foreach(var unit in units) 
+            {
+               // if (unit.RawUnitData.)
+            }
+
+            var action = CreateRawUnitCommand(Abilities.ATTACK);
+
         }
 
 

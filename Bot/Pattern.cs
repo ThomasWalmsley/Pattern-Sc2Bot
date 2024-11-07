@@ -7,10 +7,13 @@ using System;
 using System.Net.Security;
 using System.Dynamic;
 using System.Resources;
+using Bot.Controllers;
+using static SC2APIProtocol.AbilityData.Types;
 
 namespace Bot {
     public class Pattern : Bot {
 
+        UnitController unitController = new UnitController();
         TownHallSupervisor ccS;
         public bool camera = false;
 
@@ -28,12 +31,10 @@ namespace Bot {
                 ccS = new TownHallSupervisor(cc);
                 MapData.generateMapData();
                 //MapData.BaseLocations = MapData.GenerateBaseLocations();
+                MapData.GenerateBaseLocations();
+                MapData.OrderBaseLocations();
+                MapData.GeneratePathsToBases();
 
-
-                //Logger.Info("CommandCenter Placable 69,24: {0}",Controller.CanPlaceTownCenter(69,24));
-                //Logger.Info("CommandCenter Placable 69,34: {0}",Controller.CanPlaceTownCenter(69,34));
-                //Logger.Info("CommandCenter Placable 69,33: {0}",Controller.CanPlaceTownCenter(69,33));
-                //Logger.Info("CommandCenter Placable 69,35: {0}",Controller.CanPlaceTownCenter(69,35));
             }
 
             UnitsTracker.Instance.Update(Controller.obs);
@@ -48,22 +49,20 @@ namespace Bot {
             }
 
             //keep on buildings depots if supply is tight
-            if ((Controller.GetUnits(Units.SUPPLY_DEPOT).Count >= 2)&&(Controller.GetTotalCount(Units.SUPPLY_DEPOT)>=2))
-            {
-                if (Controller.maxSupply - Controller.currentSupply <= 5)
-                    if (Controller.CanConstruct(Units.SUPPLY_DEPOT))
-                        if (Controller.GetPendingCount(Units.SUPPLY_DEPOT) == 0)
-                            Controller.Construct(Units.SUPPLY_DEPOT);
-            }
 
-            if (Controller.CanConstruct(Units.SUPPLY_DEPOT) && (Controller.GetTotalCount(Units.SUPPLY_DEPOT) == 0)) 
-            {
-                Controller.ConstructOnLocation(Units.SUPPLY_DEPOT,new Vector3 { X = 55, Y = 40});
-            }
-            if (Controller.CanConstruct(Units.SUPPLY_DEPOT) && (Controller.GetTotalCount(Units.SUPPLY_DEPOT) == 1))
-            {
-                Controller.ConstructOnLocation(Units.SUPPLY_DEPOT, new Vector3 { X = 58, Y = 43 });
-            }
+            if (Controller.maxSupply - Controller.currentSupply <= 5)
+                if (Controller.CanConstruct(Units.SUPPLY_DEPOT))
+                     if (Controller.GetPendingCount(Units.SUPPLY_DEPOT) == 0)
+                        Controller.Construct(Units.SUPPLY_DEPOT);
+
+           //if (Controller.CanConstruct(Units.SUPPLY_DEPOT) && (Controller.GetTotalCount(Units.SUPPLY_DEPOT) == 0)) 
+           //{
+           //    Controller.ConstructOnLocation(Units.SUPPLY_DEPOT,new Vector3 { X = 55, Y = 40});
+           //}
+           //if (Controller.CanConstruct(Units.SUPPLY_DEPOT) && (Controller.GetTotalCount(Units.SUPPLY_DEPOT) == 1))
+           //{
+           //    Controller.ConstructOnLocation(Units.SUPPLY_DEPOT, new Vector3 { X = 58, Y = 43 });
+           //}
 
 
 
@@ -71,16 +70,17 @@ namespace Bot {
             if (Controller.frame % 50 == 0)
                 Controller.DistributeWorkers();
 
-            if (Controller.CanConstruct(Units.BARRACKS) && (Controller.GetTotalCount(Units.BARRACKS) <1)) 
+            if (Controller.CanConstruct(Units.BARRACKS) && (Controller.GetTotalCount(Units.BARRACKS) <4)) 
             {
-                Controller.ConstructOnLocation(Units.BARRACKS, new Vector3 { X = 55, Y = 42 });
+                //Controller.ConstructOnLocation(Units.BARRACKS, new Vector3 { X = 55, Y = 42 });
+                Controller.Construct(Units.BARRACKS);
             }
 
             foreach (var barracks in Controller.GetUnits(Units.BARRACKS, onlyCompleted:true)) {
                 if (Controller.CanConstruct(Units.MARINE))
                     barracks.Train(Units.MARINE);
             }
-
+            
             var army = Controller.GetUnits(Units.ArmyUnits);
             var enemyarmy = Controller.GetUnits(Units.ArmyUnits,alliance:Alliance.Enemy,onlyVisible: true);
             if (army.Count > 15)
@@ -93,16 +93,30 @@ namespace Bot {
                         Vector3 target = closestEnemy.Position;
                         List<Unit> marine_army = new List<Unit>() { marine };
                         Controller.Attack(marine_army, target);
+                        unitController.Attack(army, target);
                     }
                 }
                 else if (Controller.enemyLocations.Count > 0 && Controller.frame % 50 == 0) 
                 {
                     Controller.Attack(army, Controller.enemyLocations[0]);
+                    unitController.Attack(army, Controller.enemyLocations[0]);
                 }
             }
 
+            //check marines rawUnitData is not null
+            var marines = Controller.GetUnits(Units.MARINE);
+            foreach (var marine in marines)
+            {
+                if (!(marine.RawUnitData == null))
+                    GraphicalDebug.DrawText(marine.RawUnitData.WeaponCooldown.ToString(), marine, 10);
+            }
 
-            MapData.GenerateBaseLocations();
+
+            foreach (var baseLocation in MapData.BaseLocations) 
+            {
+                GraphicalDebug.DrawSphere(new Vector3 { X = baseLocation.X+0.5f, Y = baseLocation.Y + 0.5f, Z = MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight + 0.05f }, 2.5f,new Color {R=100,G=255,B=100 });
+                GraphicalDebug.DrawText($"{baseLocation.X},{baseLocation.Y}", new Vector3(baseLocation.X + 0.5f, baseLocation.Y + 0.5f, MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight+1),25);
+            }
 
             if (camera) { GraphicalDebug.DrawCameraGrid(); }
 

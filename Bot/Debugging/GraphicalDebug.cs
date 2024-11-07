@@ -371,11 +371,22 @@ namespace Bot
                 {
                     Vector3 start = new Vector3 { X = path[i].X, Y = path[i].Y, Z = MapData.Map[(int)path[i].X][(int)path[i].Y].TerrainHeight + 1 };
                     Vector3 end = new Vector3 { X = path[i + 1].X, Y = path[i + 1].Y, Z = MapData.Map[(int)path[i + 1].X][(int)path[i + 1].Y].TerrainHeight + 1 };
-                    GraphicalDebug.DrawLine(start, end, new Color { R = 255, G = 100, B = 100 });
+                    DrawLine(start, end, new Color { R = 255, G = 100, B = 100 });
                 }
             }
 
         }
+
+        public static void DrawPath(List<Vector2> path, Color color)
+        {
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                Vector3 start = new Vector3 { X = path[i].X, Y = path[i].Y, Z = MapData.Map[(int)path[i].X][(int)path[i].Y].TerrainHeight + 1 };
+                Vector3 end = new Vector3 { X = path[i + 1].X, Y = path[i + 1].Y, Z = MapData.Map[(int)path[i + 1].X][(int)path[i + 1].Y].TerrainHeight + 1 };
+                DrawLine(start, end, color);
+            }
+        }
+
 
     }
 }

@@ -31,7 +31,7 @@ namespace Bot {
         public int IdealWorkers;
         public int AssignedWorkers;
         public int MineralContents;
-
+        public uint LastAttackFrame;
 
         //toms changes
         public Unit AssignedMineralPatch;

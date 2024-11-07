@@ -1,0 +1,13 @@
+
+
+TODO:
+
+PathFinder : ensure pathing to a building doesn't break *because the tiles the building sits on are not walkable*
+
+Builder : build buildings in normal places (don't use BuildOnLocation)
+
+Paths : create walkable paths between every base
+
+Paths : create flyable paths between every base
+
+Buildingplacer : improve the CanBuild check
