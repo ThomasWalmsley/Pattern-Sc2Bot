@@ -23,15 +23,12 @@ namespace Bot.MapAnalysis
 
         public static List<Vector2> BaseLocations { get; set; }
 
-<<<<<<< Updated upstream
-=======
         public static List<List<Vector2>> PathsToBases { get; set; }
 
         public static List<Region> Regions { get; set; }
 
->>>>>>> Stashed changes
-        //public List<WallData> WallData { get; set; }
-        //public List<PathData> PathData { get; set; }
+        public static Vector3 PlayerStartLocation { get; set; }
+
 
         static Grid WalkGrid;
 
@@ -78,7 +75,7 @@ namespace Bot.MapAnalysis
 
         public static Grid GetMapGrid(int frame)
         {
-            if (MapLastUpdate < frame)
+            if (MapLastUpdate < frame || frame == 0)
             {
                 var gridSize = new GridSize(columns: MapWidth, rows: MapHeight);
                 var cellSize = new Size(Distance.FromMeters(1), Distance.FromMeters(1));
@@ -205,10 +202,54 @@ namespace Bot.MapAnalysis
                 GraphicalDebug.DrawSphere(new Vector3(closestBase.X+0.5f, closestBase.Y + 0.5f, Map[(int)closestBase.X][(int)closestBase.Y].TerrainHeight), 2, new Color { R = 100, G = 255, B = 100 });
                 GraphicalDebug.DrawText($"{closestBase.X},{closestBase.Y}", new Vector3(closestBase.X + 0.5f, closestBase.Y + 0.5f, Map[(int)closestBase.X][(int)closestBase.Y].TerrainHeight+1),25);
             }
-
+            BaseLocations = baseLocations;
             return baseLocations;
         }
 
+        public static List<Vector2> OrderBaseLocations()
+        {
+            //Order Base Locations by distance to player's starting location
+            List<Vector2> orderedBaseLocations = new List<Vector2>();
+
+            if (PlayerStartLocation == null || (PlayerStartLocation.X == 0 && PlayerStartLocation.Y == 0 && PlayerStartLocation.Z == 0))
+            {
+                PlayerStartLocation = Controller.GetUnits(Units.ResourceCenters)[0].Position;
+            }
+
+            //Order by distance to player's starting location
+
+            orderedBaseLocations = BaseLocations.OrderBy(b => Vector2.Distance(b, PlayerStartLocation.ToVector2())).ToList();
+
+            BaseLocations = orderedBaseLocations;
+            return orderedBaseLocations;
+        }
+
+
+        public static List<List<Vector2>> GeneratePathsToBases()
+        {
+            if (WalkGrid == null) { WalkGrid = GetMapGrid((int)Controller.frame); }
+            List<List<Vector2>> pathsToBases = new List<List<Vector2>>();
+            foreach (Vector2 baseLocation in BaseLocations)
+            {
+                //add offset to the first base (can't path through the townhall so all paths break)
+                Vector2 start = new Vector2 { X = BaseLocations[0].X + 4, Y = BaseLocations[0].Y };
+                List<Vector2> path = GetPath(start, baseLocation);
+                pathsToBases.Add(path);
+                //GraphicalDebug.DrawPath(path, new Color { R = 100, G = 100, B = 255 });
+            }
+            PathsToBases = pathsToBases;
+            return pathsToBases;
+        }
+
+        public static List<MapCell> MapToList() 
+        {
+            List<MapCell> mapCells = new List<MapCell>();
+            foreach (var row in Map.Values)
+            {
+                mapCells.AddRange(row.Values.ToList());
+            }
+            return mapCells;
+        }
 
     }
 }

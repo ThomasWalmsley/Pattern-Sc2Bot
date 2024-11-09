@@ -29,19 +29,7 @@ namespace Bot {
                 Unit cc = Controller.GetUnits(Units.ResourceCenters)[0];//get first townhall
                 ccS = new TownHallSupervisor(cc);
                 MapData.generateMapData();
-                //MapData.BaseLocations = MapData.GenerateBaseLocations();
-<<<<<<< Updated upstream
-=======
-                //MapData.GenerateBaseLocations();
-                //MapData.OrderBaseLocations();
-                //MapData.GeneratePathsToBases();
->>>>>>> Stashed changes
-
-
-                //Logger.Info("CommandCenter Placable 69,24: {0}",Controller.CanPlaceTownCenter(69,24));
-                //Logger.Info("CommandCenter Placable 69,34: {0}",Controller.CanPlaceTownCenter(69,34));
-                //Logger.Info("CommandCenter Placable 69,33: {0}",Controller.CanPlaceTownCenter(69,33));
-                //Logger.Info("CommandCenter Placable 69,35: {0}",Controller.CanPlaceTownCenter(69,35));
+                MapData.GetMapGrid(0);
             }
 
             UnitsTracker.Instance.Update(Controller.obs);
@@ -120,9 +108,8 @@ namespace Bot {
 
             //MapData.GenerateBaseLocations();
 
-<<<<<<< Updated upstream
-            if (camera) { GraphicalDebug.DrawCameraGrid(); }
-=======
+            if (camera) { GraphicalDebug.DrawCameraGrid(5); }
+
 
             foreach (var baseLocation in MapData.BaseLocations) 
             {
@@ -133,7 +120,6 @@ namespace Bot {
             regionAnalyser.DrawRegions(MapData.Regions);
 
             if (camera) { GraphicalDebug.DrawCameraGrid(5); }
->>>>>>> Stashed changes
 
             ccS.onFrame();
             return Controller.CloseFrame();

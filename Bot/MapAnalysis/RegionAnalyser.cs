@@ -11,6 +11,10 @@ namespace Bot
 {
     public class RegionAnalyser
     {
+        private static readonly float DiagonalDistance = (float)Math.Sqrt(2);
+        private const int RegionMinPoints = 6;
+        private const float RegionZMultiplier = 8;
+
         public RegionAnalyser() { }
 
         public List<Region> GenerateRegions() 
@@ -50,6 +54,24 @@ namespace Bot
             }
 
             return regions;
+        }
+
+        public List<Region> generatePotentialRegions(List<MapCell> cells) 
+        {
+            //Use DBSCAN to cluster cells into regions
+            //Using the DBSCAN from Sajuuk's bot instead of mine (it's way cleaner
+            List<Region> potentialRegions = new List<Region>();
+
+            cells.ForEach(mapCell =>
+            {
+                // Highly penalize height differences
+                mapCell.TerrainHeight = mapCell.TerrainHeight * 10;
+            });
+
+            var noise = new HashSet<MapCell>();
+            var clusteringResult = Clustering.DBSCAN(cells, epsilon: DiagonalDistance + 0.04f, minPoints: RegionMinPoints);
+
+            return potentialRegions;
         }
 
 
