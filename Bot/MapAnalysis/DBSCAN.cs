@@ -78,5 +78,76 @@ namespace Bot.MapAnalysis
 
             return neighbors;
         }
+
+
+        public static List<List<Vector3>> Cluster(List<Vector3> points, float epsilon, int minPoints)
+        {
+            var clusters = new List<List<Vector3>>();
+            var visited = new HashSet<Vector3>();
+            var noise = new List<Vector3>();
+
+            foreach (var point in points)
+            {
+                if (visited.Contains(point))
+                    continue;
+
+                visited.Add(point);
+                var neighbors = GetNeighbors(point, points, epsilon);
+
+                if (neighbors.Count < minPoints)
+                {
+                    noise.Add(point);
+                }
+                else
+                {
+                    var cluster = new List<Vector3>();
+                    clusters.Add(cluster);
+                    ExpandCluster(point, neighbors, cluster, points, visited, epsilon, minPoints);
+                }
+            }
+
+            return clusters;
+        }
+
+        private static void ExpandCluster(Vector3 point, List<Vector3> neighbors, List<Vector3> cluster, List<Vector3> points, HashSet<Vector3> visited, float epsilon, int minPoints)
+        {
+            cluster.Add(point);
+
+            for (int i = 0; i < neighbors.Count; i++)
+            {
+                var neighbor = neighbors[i];
+
+                if (!visited.Contains(neighbor))
+                {
+                    visited.Add(neighbor);
+                    var neighborNeighbors = GetNeighbors(neighbor, points, epsilon);
+
+                    if (neighborNeighbors.Count >= minPoints)
+                    {
+                        neighbors.AddRange(neighborNeighbors.Where(n => !neighbors.Contains(n)));
+                    }
+                }
+
+                if (!cluster.Contains(neighbor))
+                {
+                    cluster.Add(neighbor);
+                }
+            }
+        }
+
+        private static List<Vector3> GetNeighbors(Vector3 point, List<Vector3> points, float epsilon)
+        {
+            var neighbors = new List<Vector3>();
+
+            foreach (var p in points)
+            {
+                if (Vector3.Distance(point, p) <= epsilon)
+                {
+                    neighbors.Add(p);
+                }
+            }
+
+            return neighbors;
+        }
     }
 }

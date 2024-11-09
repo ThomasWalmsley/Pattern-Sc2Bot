@@ -23,6 +23,13 @@ namespace Bot.MapAnalysis
 
         public static List<Vector2> BaseLocations { get; set; }
 
+<<<<<<< Updated upstream
+=======
+        public static List<List<Vector2>> PathsToBases { get; set; }
+
+        public static List<Region> Regions { get; set; }
+
+>>>>>>> Stashed changes
         //public List<WallData> WallData { get; set; }
         //public List<PathData> PathData { get; set; }
 

@@ -13,6 +13,8 @@ namespace Bot {
 
         TownHallSupervisor ccS;
         public bool camera = false;
+        public RegionAnalyser regionAnalyser = new RegionAnalyser();
+
 
         //the following will be called every frame
         //you can increase the amount of frames that get processed for each step at once in Wrapper/GameConnection.cs: stepSize  
@@ -28,6 +30,12 @@ namespace Bot {
                 ccS = new TownHallSupervisor(cc);
                 MapData.generateMapData();
                 //MapData.BaseLocations = MapData.GenerateBaseLocations();
+<<<<<<< Updated upstream
+=======
+                //MapData.GenerateBaseLocations();
+                //MapData.OrderBaseLocations();
+                //MapData.GeneratePathsToBases();
+>>>>>>> Stashed changes
 
 
                 //Logger.Info("CommandCenter Placable 69,24: {0}",Controller.CanPlaceTownCenter(69,24));
@@ -37,6 +45,14 @@ namespace Bot {
             }
 
             UnitsTracker.Instance.Update(Controller.obs);
+
+            if (Controller.frame == 0)
+            {
+                MapData.GenerateBaseLocations();
+                MapData.OrderBaseLocations();
+                MapData.GeneratePathsToBases();
+                MapData.Regions = regionAnalyser.GenerateRegions();
+            }
 
             var structures = Controller.GetUnits(Units.Structures);
 
@@ -102,9 +118,22 @@ namespace Bot {
             }
 
 
-            MapData.GenerateBaseLocations();
+            //MapData.GenerateBaseLocations();
 
+<<<<<<< Updated upstream
             if (camera) { GraphicalDebug.DrawCameraGrid(); }
+=======
+
+            foreach (var baseLocation in MapData.BaseLocations) 
+            {
+                GraphicalDebug.DrawSphere(new Vector3 { X = baseLocation.X+0.5f, Y = baseLocation.Y + 0.5f, Z = MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight + 0.05f }, 2.5f,new Color {R=100,G=255,B=100 });
+                GraphicalDebug.DrawText($"{baseLocation.X},{baseLocation.Y}", new Vector3(baseLocation.X + 0.5f, baseLocation.Y + 0.5f, MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight+1),25);
+            }
+
+            regionAnalyser.DrawRegions(MapData.Regions);
+
+            if (camera) { GraphicalDebug.DrawCameraGrid(5); }
+>>>>>>> Stashed changes
 
             ccS.onFrame();
             return Controller.CloseFrame();

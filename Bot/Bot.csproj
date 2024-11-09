@@ -77,6 +77,8 @@
     <Compile Include="MapAnalysis\KMeansClustering.cs" />
     <Compile Include="MapAnalysis\MapCell.cs" />
     <Compile Include="MapAnalysis\MapData.cs" />
+    <Compile Include="MapAnalysis\Region.cs" />
+    <Compile Include="MapAnalysis\RegionAnalyser.cs" />
     <Compile Include="TypeData\Abilities.cs" />
     <Compile Include="BotThings\Controller.cs" />
     <Compile Include="Extensions\Extensions.cs" />

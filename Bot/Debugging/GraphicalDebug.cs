@@ -313,7 +313,7 @@ namespace Bot
         }
 
 
-        public static void DrawCameraGrid()
+        public static void DrawCameraGrid(int gridradius)
         {
             var height = 13;
             Vector3 camera = Controller.obs.Observation.RawData.Player.Camera.ToVector3();
@@ -321,9 +321,9 @@ namespace Bot
             DrawSphere(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, .25f);
             DrawLine(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, new Vector3 { X = camera.X, Y = camera.Y, Z = 0 }, new Color { R = 255, G = 255, B = 255 });
 
-            for (int x = -5; x <= 5; x++)
+            for (int x = -gridradius; x <= gridradius; x++)
             {
-                for (int y = -5; y <= 5; y++)
+                for (int y = -gridradius; y <= gridradius; y++)
                 {
                     var point = new Vector3 { X = (int)camera.X + x, Y = (int)camera.Y + y, Z = height + 1 };
                     var color = new Color { R = 255, G = 100, B = 100 };
