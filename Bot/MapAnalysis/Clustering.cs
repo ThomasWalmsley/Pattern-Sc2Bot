@@ -104,7 +104,7 @@ namespace Bot.MapAnalysis
                 }
 
                 var neighbors = positions.Where(otherItem => position != otherItem && position.DistanceTo(otherItem) <= epsilon).ToList();
-                if (neighbors.Count < minPoints)
+                if (neighbors.Count() < minPoints)
                 {
                     labels[position] = DBSCANLabels.Noise;
                     continue;
