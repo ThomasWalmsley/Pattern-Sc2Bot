@@ -74,6 +74,7 @@
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Controllers\UnitController.cs" />
     <Compile Include="Extensions\Vector2Extensions.cs" />
+    <Compile Include="Interfaces\IHavePosition.cs" />
     <Compile Include="MapAnalysis\Clustering.cs" />
     <Compile Include="MapAnalysis\DBSCAN.cs" />
     <Compile Include="MapAnalysis\MapCell.cs" />
@@ -134,6 +135,9 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Pattern\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

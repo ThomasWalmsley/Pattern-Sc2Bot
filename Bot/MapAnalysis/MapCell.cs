@@ -1,13 +1,16 @@
-﻿using System;
+﻿using Roy_T.AStar.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Bot.MapAnalysis
 {
-    public class MapCell
+    public class MapCell : IHavePosition
     {
+        public Vector3 Position { get; }
         public int X { get; set; }
         public int Y { get; set; }
         public int TerrainHeight { get; set; }

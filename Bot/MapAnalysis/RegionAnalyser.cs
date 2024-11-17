@@ -68,8 +68,9 @@ namespace Bot
                 mapCell.TerrainHeight = mapCell.TerrainHeight * 10;
             });
 
-            var noise = new HashSet<MapCell>();
-            var clusteringResult = Clustering.DBSCAN(cells, epsilon: DiagonalDistance + 0.04f, minPoints: RegionMinPoints);
+            //var noise = new HashSet<MapCell>();
+            //var clusteringResult = Clustering.DBSCAN(cells, epsilon: DiagonalDistance + 0.04f, minPoints: RegionMinPoints);
+
 
             return potentialRegions;
         }
