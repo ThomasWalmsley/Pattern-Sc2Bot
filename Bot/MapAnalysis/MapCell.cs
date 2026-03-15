@@ -10,6 +10,12 @@ namespace Bot.MapAnalysis
 {
     public class MapCell : IHavePosition
     {
+        public MapCell() 
+        {
+            //Position 
+
+        }
+
         public Vector3 Position { get; }
         public int X { get; set; }
         public int Y { get; set; }
