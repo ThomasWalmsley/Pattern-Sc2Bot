@@ -108,6 +108,9 @@ namespace Bot {
 
             //MapData.GenerateBaseLocations();
 
+            if (MapData.BaseLocations == null)
+                MapData.GenerateBaseLocations();
+
             if (camera) { GraphicalDebug.DrawCameraGrid(5); }
 
 

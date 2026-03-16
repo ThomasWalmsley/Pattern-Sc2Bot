@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using SC2APIProtocol;
 
 namespace Bot {
@@ -20,7 +21,8 @@ namespace Bot {
         //private static string mapName = "GoldenWall506.SC2Map";
         //private static string mapName = "EternalEmpire506.SC2Map";
 
-        private static string mapName = "Equilibrium513AIE.SC2Map";
+        //private static string mapName = "Equilibrium513AIE.SC2Map";
+        private static string mapName = "IncorporealAIE.SC2Map";
         //private static string mapName = "GoldenAura513AIE.SC2Map";
         //private static string mapName = "Gresvan513AIE.SC2Map";
         //private static string mapName = "HardLead513AIE.SC2Map";
@@ -43,12 +45,13 @@ namespace Bot {
         private static string GetRandomMap() 
         {
             List<string> maps = new List<string>();
-            maps.Add("Equilibrium513AIE.SC2Map");
-            maps.Add("GoldenAura513AIE.SC2Map");
-            maps.Add("Gresvan513AIE.SC2Map");
-            maps.Add("HardLead513AIE.SC2Map");
-            maps.Add("Oceanborn513AIE.SC2Map");
-            maps.Add("SiteDelta513AIE.SC2Map");
+            maps.Add("IncorporealAIE.SC2Map");
+            //maps.Add("Equilibrium513AIE.SC2Map");
+            //maps.Add("GoldenAura513AIE.SC2Map");
+            //maps.Add("Gresvan513AIE.SC2Map");
+            //maps.Add("HardLead513AIE.SC2Map");
+            //maps.Add("Oceanborn513AIE.SC2Map");
+            //maps.Add("SiteDelta513AIE.SC2Map");
             Random random = new Random();
             int mapNumber = random.Next(0, maps.Count);
             return maps[mapNumber];
