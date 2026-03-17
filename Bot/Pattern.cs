@@ -20,6 +20,9 @@ namespace Bot {
         //you can increase the amount of frames that get processed for each step at once in Wrapper/GameConnection.cs: stepSize  
         public IEnumerable<SC2APIProtocol.Action> OnFrame() {
             Controller.OpenFrame();
+
+            return Controller.CloseFrame(); //SKIP EVERYTHING FOR TESTING WITH DOCKER
+
             if (Controller.frame == 0) {
                 Logger.Info("Pattern");
                 Logger.Info("--------------------------------------");
@@ -114,11 +117,11 @@ namespace Bot {
             if (camera) { GraphicalDebug.DrawCameraGrid(5); }
 
 
-            foreach (var baseLocation in MapData.BaseLocations) 
-            {
-                GraphicalDebug.DrawSphere(new Vector3 { X = baseLocation.X+0.5f, Y = baseLocation.Y + 0.5f, Z = MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight + 0.05f }, 2.5f,new Color {R=100,G=255,B=100 });
-                GraphicalDebug.DrawText($"{baseLocation.X},{baseLocation.Y}", new Vector3(baseLocation.X + 0.5f, baseLocation.Y + 0.5f, MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight+1),25);
-            }
+            //foreach (var baseLocation in MapData.BaseLocations) 
+            //{
+            //    GraphicalDebug.DrawSphere(new Vector3 { X = baseLocation.X+0.5f, Y = baseLocation.Y + 0.5f, Z = MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight + 0.05f }, 2.5f,new Color {R=100,G=255,B=100 });
+            //    GraphicalDebug.DrawText($"{baseLocation.X},{baseLocation.Y}", new Vector3(baseLocation.X + 0.5f, baseLocation.Y + 0.5f, MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight+1),25);
+            //}
 
             regionAnalyser.DrawRegions(MapData.Regions);
 

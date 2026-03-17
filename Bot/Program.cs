@@ -39,7 +39,7 @@ namespace Bot {
 
         public static GameConnection gc;
 
-        private static bool realtime = true;
+        private static bool realtime = false;
         private static bool randomMap = true;
 
         private static string GetRandomMap() 
@@ -64,7 +64,9 @@ namespace Bot {
                 if (args.Length == 0){
                     gc.readSettings();
                     if (randomMap) { mapName = GetRandomMap(); }
-                    gc.RunSinglePlayer(bot, mapName, race, opponentRace, opponentDifficulty, realtime).Wait();
+                    //gc.RunSinglePlayer(bot, mapName, race, opponentRace, opponentDifficulty, realtime).Wait();
+                    mapName = "IncorporealAIE.SC2Map"; //GET RID OF THIS LATER, TESTING ONLY!!!!!!
+                   gc.RunDocker(bot, mapName, race, opponentRace, opponentDifficulty, realtime).Wait();
                 }
                 else
                     gc.RunLadder(bot, race, args).Wait();

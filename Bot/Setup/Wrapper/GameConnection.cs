@@ -18,11 +18,8 @@ namespace Bot {
 
         private void StartSC2Instance(int port) {
             var processStartInfo = new ProcessStartInfo(starcraftExe);
-            processStartInfo.Arguments = string.Format("-listen {0} -port {1} -displayMode 0 -windowwidth 1 -windowheight 1 -windowx 0 -windowy 0", address, port);
+            processStartInfo.Arguments = string.Format("-listen {0} -port {1} -displayMode 0 ", address, port);
             processStartInfo.WorkingDirectory = Path.Combine(starcraftDir, "Support64");
-            processStartInfo.CreateNoWindow = true;
-            processStartInfo.UseShellExecute = false;
-            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
             Logger.Info("Launching SC2:");
             Logger.Info("--> File: {0}", starcraftExe);
@@ -54,15 +51,15 @@ namespace Bot {
             var createGame = new RequestCreateGame();
             createGame.Realtime = realtime;
 
-            var mapPath = Path.Combine(starcraftMaps, mapName);
+            //var mapPath = Path.Combine(starcraftMaps, mapName);
 
-            if (!File.Exists(mapPath)) {
-                Logger.Info("Unable to locate map: " + mapPath);
-                throw new Exception("Unable to locate map: " + mapPath);
-            }
+            //if (!File.Exists(mapPath)) {
+            //    Logger.Info("Unable to locate map: " + mapPath);
+            //    throw new Exception("Unable to locate map: " + mapPath);
+            //}
 
             createGame.LocalMap = new LocalMap();
-            createGame.LocalMap.MapPath = mapPath;
+            createGame.LocalMap.MapPath = "/StarCraftII/maps/" + mapName;
 
             var player1 = new PlayerSetup();
             createGame.PlayerSetup.Add(player1);
@@ -253,6 +250,25 @@ namespace Bot {
             await CreateGame(map, opponentRace, opponentDifficulty,realtime);
             Logger.Info("Joining game");
             var playerId = await JoinGame(myRace);
+            await Run(bot, playerId);
+        }
+
+        public async Task RunDocker(Bot bot, string map, Race myRace, Race opponentRace,
+            Difficulty opponentDifficulty, bool realtime)
+            //Copied from ChatGPT, idk if it will work.
+        {
+            //var port = 5678;
+            var port = 8167;
+
+            Logger.Info("Connecting to Docker SC2...");
+            await Connect(port);
+
+            Logger.Info("Creating game...");
+            await CreateGame(map, opponentRace, opponentDifficulty, realtime);
+
+            Logger.Info("Joining game...");
+            var playerId = await JoinGame(myRace);
+
             await Run(bot, playerId);
         }
 
