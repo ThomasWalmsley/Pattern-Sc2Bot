@@ -3,6 +3,6 @@ using SC2APIProtocol;
 
 namespace Bot {
     public interface Bot {
-        IEnumerable<Action> OnFrame();
+        IEnumerable<SC2APIProtocol.Action> OnFrame();
     }
 }

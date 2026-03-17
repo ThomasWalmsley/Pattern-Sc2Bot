@@ -2,51 +2,16 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net48</TargetFramework>
-    <RootNamespace>Bot</RootNamespace>
-    <AssemblyName>Bot</AssemblyName>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- External References -->
-    <Reference Include="Google.Protobuf">
-      <HintPath>..\References\Google.Protobuf.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Roy-T.AStar">
-      <HintPath>..\packages\RoyT.AStar.3.0.2\lib\netstandard2.0\Roy-T.AStar.dll</HintPath>
-    </Reference>
-
-    <!-- System References -->
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="Google.Protobuf" Version="3.34.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="RoyT.AStar" Version="3.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <!-- Compile Files -->
-
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Content / Non-Compile Files -->
-    <None Include="app.config" />
-    <None Include="packages.config" />
-    <Content Include="TODO.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Folders -->
-    <Folder Include="Data\" />
-    <Folder Include="Pattern\" />
-  </ItemGroup>
 
 </Project>

@@ -21,7 +21,7 @@ namespace Bot {
         public IEnumerable<SC2APIProtocol.Action> OnFrame() {
             Controller.OpenFrame();
 
-            return Controller.CloseFrame(); //SKIP EVERYTHING FOR TESTING WITH DOCKER
+            //return Controller.CloseFrame(); //SKIP EVERYTHING FOR TESTING WITH DOCKER
 
             if (Controller.frame == 0) {
                 Logger.Info("Pattern");
