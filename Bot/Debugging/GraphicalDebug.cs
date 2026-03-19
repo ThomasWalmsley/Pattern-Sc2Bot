@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Bot.MapAnalysis;
 using SC2APIProtocol;
 //using Bot.Util;
+using Color = SC2APIProtocol.Color;
+using Point = SC2APIProtocol.Point;
 
 namespace Bot
 {

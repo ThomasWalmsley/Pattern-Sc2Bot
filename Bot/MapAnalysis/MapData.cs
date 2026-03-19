@@ -11,6 +11,9 @@ using Roy_T.AStar.Primitives;
 using Roy_T.AStar.Paths;
 using System.Numerics;
 
+using Size = Roy_T.AStar.Primitives.Size;
+using GridSize = Roy_T.AStar.Primitives.GridSize;
+
 namespace Bot.MapAnalysis
 {
     public static class MapData

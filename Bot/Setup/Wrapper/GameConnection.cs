@@ -220,6 +220,32 @@ namespace Bot {
                                 // Do whatever you want with the info
                             }
                         }
+
+                            // ✅ SAVE REPLAY HERE
+                        var replayResponse = await proxy.SendRequest(new Request
+                        {
+                            SaveReplay = new RequestSaveReplay()
+                        });
+
+                        var replayBytes = replayResponse.SaveReplay.Data.ToByteArray();
+
+                        var baseDir = AppContext.BaseDirectory;
+
+                        // Go from bin/Debug/netX → project root
+                        var projectDir = Path.GetFullPath(Path.Combine(baseDir, @"..\..\.."));
+
+                        var replayDir = Path.Combine(projectDir, "Replays");
+                        Directory.CreateDirectory(replayDir);
+
+                        var fileName = Path.Combine(
+                        replayDir,
+                        $"replay_{DateTime.Now:yyyyMMdd_HHmmss}.SC2Replay"
+                        );  
+
+                        File.WriteAllBytes(fileName, replayBytes);
+
+                        Logger.Info("Replay saved: {0}", fileName);
+
                         break;
                     }
 

@@ -45,31 +45,29 @@ namespace Bot {
         private static string GetRandomMap() 
         {
             List<string> maps = new List<string>();
-            maps.Add("IncorporealAIE.SC2Map");
-            //maps.Add("Equilibrium513AIE.SC2Map");
-            //maps.Add("GoldenAura513AIE.SC2Map");
-            //maps.Add("Gresvan513AIE.SC2Map");
-            //maps.Add("HardLead513AIE.SC2Map");
-            //maps.Add("Oceanborn513AIE.SC2Map");
-            //maps.Add("SiteDelta513AIE.SC2Map");
+            maps.Add("LeyLinesAIE.SC2Map");
+            maps.Add("MagannathaAIE.SC2Map");
+            maps.Add("PylonAIE.SC2Map");
+            maps.Add("TorchesAIE.SC2Map");
+            maps.Add("UltraloveAIE.SC2Map");
+            maps.Add("LeyLinesAIE.SC2Map");
+            maps.Add("LeyLinesAIE.SC2Map");
             Random random = new Random();
             int mapNumber = random.Next(0, maps.Count);
             return maps[mapNumber];
         }
 
-
-        private static void Main(string[] args) {
+        private static async Task Main(string[] args) {
             try {
                 gc = new GameConnection();
                 if (args.Length == 0){
-                    gc.readSettings();
+                     gc.readSettings();
                     if (randomMap) { mapName = GetRandomMap(); }
-                    //gc.RunSinglePlayer(bot, mapName, race, opponentRace, opponentDifficulty, realtime).Wait();
-                    mapName = "IncorporealAIE.SC2Map"; //GET RID OF THIS LATER, TESTING ONLY!!!!!!
-                   gc.RunDocker(bot, mapName, race, opponentRace, opponentDifficulty, realtime).Wait();
+                    //mapName = "UltraloveAIE.SC2Map"; 
+                   await gc.RunDocker(bot, mapName, race, opponentRace, opponentDifficulty, realtime); 
                 }
                 else
-                    gc.RunLadder(bot, race, args).Wait();
+                    await gc.RunLadder(bot, race, args);
             }
             catch (Exception ex) {
                 Logger.Info(ex.ToString());

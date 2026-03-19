@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using SC2APIProtocol;
 
+using SC2Color = SC2APIProtocol.Color;
+
 namespace Bot
 {
     public class RegionAnalyser
@@ -118,7 +120,7 @@ namespace Bot
                 center.X = (int)region.Cells.Average(c => c.X);
                 center.Y = (int)region.Cells.Average(c => c.Y);
                 center.Z = 12;
-                GraphicalDebug.DrawSphere(center, 2, new Color {R=100,G=255,B=255 });
+                GraphicalDebug.DrawSphere(center, 2, new SC2APIProtocol.Color {R=100,G=255,B=255 });
                 GraphicalDebug.DrawText($"Region : {center.X},{center.Y}",center,15);
                 Vector3 camera = Controller.obs.Observation.RawData.Player.Camera.ToVector3();
                 if (region.Cells.Contains(new Vector3 {X = (int)camera.X,Y = (int)camera.Y,Z= MapData.Map[(int)camera.X][(int)camera.Y].TerrainHeight }))

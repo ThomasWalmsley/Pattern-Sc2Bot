@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using System.Numerics;
 using SC2APIProtocol;
+using Point = SC2APIProtocol.Point;
 
 namespace Bot
 {

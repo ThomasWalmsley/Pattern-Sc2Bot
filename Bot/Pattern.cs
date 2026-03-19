@@ -123,9 +123,9 @@ namespace Bot {
             //    GraphicalDebug.DrawText($"{baseLocation.X},{baseLocation.Y}", new Vector3(baseLocation.X + 0.5f, baseLocation.Y + 0.5f, MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight+1),25);
             //}
 
-            regionAnalyser.DrawRegions(MapData.Regions);
+            //regionAnalyser.DrawRegions(MapData.Regions);
 
-            if (camera) { GraphicalDebug.DrawCameraGrid(5); }
+            //if (camera) { GraphicalDebug.DrawCameraGrid(5); }
 
             ccS.onFrame();
             return Controller.CloseFrame();
@@ -147,7 +147,7 @@ namespace Bot {
                     {
                         if (cell.Walkable)
                         {
-                            GraphicalDebug.DrawCube(new Vector3(cell.X + 0.5f, cell.Y + 0.5f, cell.TerrainHeight), 1, new Color { R = 100, G = 255, B = 100 });
+                            //GraphicalDebug.DrawCube(new Vector3(cell.X + 0.5f, cell.Y + 0.5f, cell.TerrainHeight), 1, new Color { R = 100, G = 255, B = 100 });
                             //Console.WriteLine($"Cell: X:{cell.X} Y:{cell.Y} Z:{cell.TerrainHeight}");
                         }
                     }
@@ -155,7 +155,7 @@ namespace Bot {
                     {
                         if (cell.Buildable)
                         {
-                            GraphicalDebug.DrawCube(new Vector3(cell.X + 0.5f, cell.Y + 0.5f, cell.TerrainHeight), 1, new Color { R = 100, G = 100, B = 255 });
+                            //GraphicalDebug.DrawCube(new Vector3(cell.X + 0.5f, cell.Y + 0.5f, cell.TerrainHeight), 1, new Color { R = 100, G = 100, B = 255 });
                             //Console.WriteLine($"Cell: X:{cell.X} Y:{cell.Y} Z:{cell.TerrainHeight}");
                         }
                     }
@@ -171,24 +171,24 @@ namespace Bot {
 
             GraphicalDebug.DrawText($"Camera: {(int)camera.X},{(int)camera.Y} : Walkable");
             GraphicalDebug.DrawSphere(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, .25f);
-            GraphicalDebug.DrawLine(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, new Vector3 { X = camera.X, Y = camera.Y, Z = 0 }, new Color { R = 255, G = 255, B = 255 });
+            //GraphicalDebug.DrawLine(new Vector3 { X = camera.X, Y = camera.Y, Z = height }, new Vector3 { X = camera.X, Y = camera.Y, Z = 0 }, new Color { R = 255, G = 255, B = 255 });
 
             for (int x = -5; x <= 5; x++)
             {
                 for (int y = -5; y <= 5; y++)
                 {
                     var point = new Vector3 { X = (int)camera.X + x, Y = (int)camera.Y + y, Z = height + 1 };
-                    var color = new Color { R = 255, G = 100, B = 100 };
+                    //var color = new Color { R = 255, G = 100, B = 100 };
                     if (point.X + 1 < MapData.MapWidth && point.Y + 1 < MapData.MapHeight && point.X > 0 && point.Y > 0)
                     {
                         if (MapData.Map[(int)point.X][(int)point.Y].Walkable)
                         {
-                            color = new Color { R =100, G = 255, B = 100 };
+                            //color = new Color { R =100, G = 255, B = 100 };
                         }
                         point.X = point.X + 0.5f;
                         point.Y = point.Y + 0.5f;
                         point.Z = MapData.Map[(int)camera.X][(int)camera.Y].TerrainHeight+0.05f;
-                        GraphicalDebug.DrawCube(point, 1, color);
+                        //GraphicalDebug.DrawCube(point, 1, color);
                         //Controller.gdebug.DrawLine(point, new Vector3 { X = point.X + 1, Y = point.Y, Z = height + 1 }, color);
                         //Controller.gdebug.DrawLine(point, new Vector3 { X = point.X, Y = point.Y + 1, Z = height + 1 }, color);
                         //Controller.gdebug.DrawLine(point, new Vector3 { X = point.X, Y = point.Y + 1, Z = 1 }, color);
@@ -207,7 +207,7 @@ namespace Bot {
             {
                 foreach (var point in cluster)
                 {
-                    GraphicalDebug.DrawCube(new Vector3 { X = point.X, Y = point.Y, Z = MapData.Map[(int)point.X][(int)point.Y].TerrainHeight + 1 }, 1, new Color { R = 255, G = 100, B = 100 });
+                    //GraphicalDebug.DrawCube(new Vector3 { X = point.X, Y = point.Y, Z = MapData.Map[(int)point.X][(int)point.Y].TerrainHeight + 1 }, 1, new Color { R = 255, G = 100, B = 100 });
                 }
                 Vector2 centroid = CalculateCentroid(cluster);
 
@@ -238,8 +238,8 @@ namespace Bot {
                     closest = mineralField;
                 }
             }
-            GraphicalDebug.DrawCube(new Vector3 { X = closest.X, Y = closest.Y, Z = MapData.Map[(int)closest.X][(int)closest.Y].TerrainHeight + 0.05f }, 1,new Color {R = 100,G=100,B=255 });
-            GraphicalDebug.DrawSphere(new Vector3 { X = baseLocation.X, Y = baseLocation.Y, Z = MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight + 0.05f }, 1);
+            //GraphicalDebug.DrawCube(new Vector3 { X = closest.X, Y = closest.Y, Z = MapData.Map[(int)closest.X][(int)closest.Y].TerrainHeight + 0.05f }, 1,new Color {R = 100,G=100,B=255 });
+            //GraphicalDebug.DrawSphere(new Vector3 { X = baseLocation.X, Y = baseLocation.Y, Z = MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight + 0.05f }, 1);
 
             var closestLocation = 1000000f;
             var approximateLocation = baseLocation;
@@ -249,7 +249,7 @@ namespace Bot {
                 for (int j = -4; j < 4; j++)
                 {
                     Vector2 newPos = new Vector2 { X = approximateLocation.X + i, Y = approximateLocation.Y + j };
-                    GraphicalDebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = MapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
+                    //GraphicalDebug.DrawCube(new Vector3 { X = newPos.X, Y = newPos.Y, Z = MapData.Map[(int)newPos.X][(int)newPos.Y].TerrainHeight + 0.05f }, 1);
                 }
             }
         }
