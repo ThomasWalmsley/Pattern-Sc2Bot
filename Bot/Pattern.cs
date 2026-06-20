@@ -10,7 +10,7 @@ using System.Resources;
 
 namespace Bot {
     public class Pattern : Bot {
-
+        
         TownHallSupervisor ccS;
         public bool camera = false;
         public RegionAnalyser regionAnalyser = new RegionAnalyser();
@@ -33,6 +33,7 @@ namespace Bot {
                 ccS = new TownHallSupervisor(cc);
                 MapData.generateMapData();
                 MapData.GetMapGrid(0);
+                //GraphicalDebug.DrawText("toggle": "<toggle key>", "label": "<icon or text>", "description": "<tooltip>", "on": <true or false>);
             }
 
             UnitsTracker.Instance.Update(Controller.obs);
@@ -117,15 +118,15 @@ namespace Bot {
             if (camera) { GraphicalDebug.DrawCameraGrid(5); }
 
 
-            //foreach (var baseLocation in MapData.BaseLocations) 
-            //{
-            //    GraphicalDebug.DrawSphere(new Vector3 { X = baseLocation.X+0.5f, Y = baseLocation.Y + 0.5f, Z = MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight + 0.05f }, 2.5f,new Color {R=100,G=255,B=100 });
-            //    GraphicalDebug.DrawText($"{baseLocation.X},{baseLocation.Y}", new Vector3(baseLocation.X + 0.5f, baseLocation.Y + 0.5f, MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight+1),25);
-            //}
+            foreach (var baseLocation in MapData.BaseLocations) 
+            {
+                GraphicalDebug.DrawSphere(new Vector3 { X = baseLocation.X+0.5f, Y = baseLocation.Y + 0.5f, Z = MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight + 0.05f }, 2.5f,new Color {R=100,G=255,B=100 });
+                GraphicalDebug.DrawText($"{baseLocation.X},{baseLocation.Y}", new Vector3(baseLocation.X + 0.5f, baseLocation.Y + 0.5f, MapData.Map[(int)baseLocation.X][(int)baseLocation.Y].TerrainHeight+1),25);
+            }
 
-            //regionAnalyser.DrawRegions(MapData.Regions);
+            regionAnalyser.DrawRegions(MapData.Regions);
 
-            //if (camera) { GraphicalDebug.DrawCameraGrid(5); }
+            if (camera) { GraphicalDebug.DrawCameraGrid(5); }
 
             ccS.onFrame();
             return Controller.CloseFrame();

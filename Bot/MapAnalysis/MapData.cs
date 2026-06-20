@@ -119,6 +119,7 @@ namespace Bot.MapAnalysis
 
         public static List<Vector2> GenerateBaseLocations() 
         {
+            Logger.Info("Generating Base Locations");
             List<Vector2> baseLocations = new List<Vector2>();
 
             //Cluster Minerals
@@ -165,10 +166,10 @@ namespace Bot.MapAnalysis
                 //Draw Minerals in Cluster
                 foreach (var mineral in cluster)
                 {                     
-                    //GraphicalDebug.DrawCube(new Vector3(mineral.X, mineral.Y, Map[(int)mineral.X][(int)mineral.Y].TerrainHeight + 1), 1);
+                    GraphicalDebug.DrawCube(new Vector3(mineral.X, mineral.Y, Map[(int)mineral.X][(int)mineral.Y].TerrainHeight + 1), 1);
                 }
                 //Draw Centroid
-                //GraphicalDebug.DrawSphere(new Vector3(x, y, Map[(int)x][(int)y].TerrainHeight), 1);
+                GraphicalDebug.DrawSphere(new Vector3(x, y, Map[(int)x][(int)y].TerrainHeight), 1);
 
 
                 List<Vector2> possibleLocations = new List<Vector2>();
@@ -185,7 +186,7 @@ namespace Bot.MapAnalysis
                         }
                         else 
                         {
-                            //GraphicalDebug.DrawCube(new Vector3(x + i, y + j, Map[(int)x + i][(int)y + j].TerrainHeight), 1,new Color {R=255,G=100,B=100 });
+                            GraphicalDebug.DrawCube(new Vector3(x + i, y + j, Map[(int)x + i][(int)y + j].TerrainHeight), 1,new Color {R=255,G=100,B=100 });
                         }
                     }
                 }
@@ -202,8 +203,8 @@ namespace Bot.MapAnalysis
                     }
                 }
                 baseLocations.Add(closestBase);
-                //GraphicalDebug.DrawSphere(new Vector3(closestBase.X+0.5f, closestBase.Y + 0.5f, Map[(int)closestBase.X][(int)closestBase.Y].TerrainHeight), 2, new Color { R = 100, G = 255, B = 100 });
-                //GraphicalDebug.DrawText($"{closestBase.X},{closestBase.Y}", new Vector3(closestBase.X + 0.5f, closestBase.Y + 0.5f, Map[(int)closestBase.X][(int)closestBase.Y].TerrainHeight+1),25);
+                GraphicalDebug.DrawSphere(new Vector3(closestBase.X+0.5f, closestBase.Y + 0.5f, Map[(int)closestBase.X][(int)closestBase.Y].TerrainHeight), 2, new Color { R = 100, G = 255, B = 100 });
+                GraphicalDebug.DrawText($"{closestBase.X},{closestBase.Y}", new Vector3(closestBase.X + 0.5f, closestBase.Y + 0.5f, Map[(int)closestBase.X][(int)closestBase.Y].TerrainHeight+1),25);
             }
             BaseLocations = baseLocations;
             return baseLocations;
